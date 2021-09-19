@@ -3,6 +3,8 @@ import { BOARD_SIZE } from "../../constants";
 
 const initialCellState = {
   owner: 0,
+  showValidState: 0,
+  
 };
 
 const initialState = {
