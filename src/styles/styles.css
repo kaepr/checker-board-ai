@@ -1,0 +1,45 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+
+  font-family: "Inter", sans-serif;
+}
+
+.container {
+  min-height: 100vh;
+  background-color: azure;
+}
+
+.game__container {
+  margin: 0 auto;
+  border: 1px solid black;
+}
+
+.game__row {
+  display: flex;
+  flex-direction: row;
+}
+
+.game__cell {
+  padding: 0.5em;
+  display: grid;
+  place-items: center;
+}
+
+.cell__dark {
+  background-color: #474554;
+}
+
+.cell__grey {
+  background-color: #faf7ff;
+}
+
+.checker__piece {
+  background: lightblue;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+}
