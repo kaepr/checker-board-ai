@@ -1,6 +1,20 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { handlePlayerInput } from "../features/game/gameSlice";
+import { PLAYER_1, PLAYER_2, COMPUTER } from "../constants";
+
+const getCheckerPiece = (owner) => {
+  switch (owner) {
+    case PLAYER_1:
+      return <div className="checker__piece checker__piece--first" />;
+    case PLAYER_2:
+      return <div className="checker__piece checker__piece--second" />;
+    case COMPUTER:
+      return <div className="checker__piece checker__piece--computer" />;
+    default:
+      return null;
+  }
+};
 
 const Cell = ({ data, xPosition, yPosition }) => {
   let cellColor;
@@ -14,7 +28,6 @@ const Cell = ({ data, xPosition, yPosition }) => {
 
   const handleClick = (e) => {
     e.stopPropagation();
-    console.log(xPosition, yPosition);
     dispatch(
       handlePlayerInput({
         moveCoordinates: [xPosition, yPosition],
@@ -23,8 +36,8 @@ const Cell = ({ data, xPosition, yPosition }) => {
   };
 
   return (
-    <div className={"game__cell " + cellColor} onClick={(e) => handleClick(e)}>
-      <div className="checker__piece" />
+    <div className={"game__cell " + cellColor} onClick={handleClick}>
+      {getCheckerPiece(data.owner)}
     </div>
   );
 };

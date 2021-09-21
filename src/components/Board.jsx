@@ -24,14 +24,11 @@ const Board = ({ boardData }) => {
   }
 
   return (
-    <>
-      <h2>Game Board Component</h2>
-      <div className="game__container">
-        {boardData.map((x, index) => {
-          return <Row rowData={x} key={index} yPosition={index} />;
-        })}
-      </div>
-    </>
+    <div className="game__container">
+      {boardData.map((x, index) => {
+        return <Row rowData={x} key={index} yPosition={index} />;
+      })}
+    </div>
   );
 };
 

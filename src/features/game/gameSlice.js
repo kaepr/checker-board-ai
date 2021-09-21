@@ -1,10 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { BOARD_SIZE } from "../../constants";
+import { BOARD_SIZE, EMPTY, PLAYER_1, PLAYER_2 } from "../../constants";
 
 const initialCellState = {
-  owner: 0,
+  owner: EMPTY,
   showValidState: 0,
-  
 };
 
 const initialState = {
@@ -12,18 +11,48 @@ const initialState = {
   playerOneMoves: [],
 };
 
+const createNewBoard = () => {
+  let board = [];
+  for (let i = 0; i < BOARD_SIZE; i++) {
+    let row = [];
+    for (let j = 0; j < BOARD_SIZE; j++) {
+      row.push({ ...initialCellState });
+    }
+    board.push(row);
+  }
+
+  // Player 2
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < BOARD_SIZE; j++) {
+      if ((i + j) % 2 == 0) {
+        board[i][j].owner = PLAYER_2;
+      }
+    }
+  }
+
+  // Player 1
+  for (let i = BOARD_SIZE - 3; i < BOARD_SIZE; i++) {
+    for (let j = 0; j < BOARD_SIZE; j++) {
+      if ((i + j) % 2 == 0) {
+        board[i][j].owner = PLAYER_1;
+      }
+    }
+  }
+
+  return board;
+};
+
 const gameSlice = createSlice({
   name: "game",
   initialState,
   reducers: {
-    initializeBoard(state) {
-      for (let i = 0; i < BOARD_SIZE; i++) {
-        let board_row = [];
-        for (let j = 0; j < BOARD_SIZE; j++) {
-          board_row.push(initialCellState);
-        }
-        state.board.push(board_row);
-      }
+    initializeBoard: {
+      reducer(state, action) {
+        state.board = action.payload.board;
+      },
+      prepare() {
+        return { payload: { board: createNewBoard() } };
+      },
     },
     handlePlayerInput(state, action) {
       state.playerOneMoves.push(action.payload.moveCoordinates);

@@ -29,9 +29,14 @@ function App() {
 
   return (
     <div className="container">
-      <button onClick={initialize}> Initialize Button </button>
-      <Board boardData={board} />
-      <MoveList moveList={moveList} />
+      <h1>Checkers</h1>
+      <button className="btn-primary mt-4" onClick={initialize}>
+        Reset
+      </button>
+      <div className="board-and-moves-container">
+        <Board boardData={board} />
+        <MoveList moveList={moveList} />
+      </div>
     </div>
   );
 }
