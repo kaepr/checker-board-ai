@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { EMPTY, BOARD_SIZE, PLAYER_1 } from '../constants';
+import { getAdjacentMoves, getCaptureMoves } from './findHelpers';
 
 const getInitiaCellState = () => {
   return {
@@ -44,45 +45,45 @@ Show him all his possible next moves
 
 Returns an array of the next possible moves for provided indexes
 */
-function captureMoves(rowIndex, columnIndex, board, directions, currentPlayer) {
-  const possibleCaptureMoves = [];
-  for (let i = 0; i < directions.length; i++) {
-    const midX = rowIndex + directions[i][0];
-    const midY = columnIndex + directions[i][1];
+// function getCaptureMoves(rowIndex, columnIndex, board, directions, currentPlayer) {
+//   const possibleCaptureMoves = [];
+//   for (let i = 0; i < directions.length; i++) {
+//     const midX = rowIndex + directions[i][0];
+//     const midY = columnIndex + directions[i][1];
 
-    const destX = rowIndex + directions[i][0] * 2;
-    const destY = columnIndex + directions[i][1] * 2;
+//     const destX = rowIndex + directions[i][0] * 2;
+//     const destY = columnIndex + directions[i][1] * 2;
 
-    if (isValidIndex(destX, destY) && isValidIndex(midX, midY)) {
-      const destinationCell = board[destX][destY];
-      const middleCell = board[midX][midY];
-      const isMiddleEnemy = middleCell.owner != currentPlayer && middleCell.owner != EMPTY;
+//     if (isValidIndex(destX, destY) && isValidIndex(midX, midY)) {
+//       const destinationCell = board[destX][destY];
+//       const middleCell = board[midX][midY];
+//       const isMiddleEnemy = middleCell.owner != currentPlayer && middleCell.owner != EMPTY;
 
-      if (destinationCell.owner == EMPTY && isMiddleEnemy) {
-        possibleMoves.push([destX, destY]);
-      }
-    }
-  }
-  return possibleCaptureMoves;
-}
+//       if (destinationCell.owner == EMPTY && isMiddleEnemy) {
+//         possibleCaptureMoves.push([destX, destY]);
+//       }
+//     }
+//   }
+//   return possibleCaptureMoves;
+// }
 
-function adjacentMoves(rowIndex, columnIndex, board, directions) {
-  let adjacentMoves = [];
+// function getAdjacentMoves(rowIndex, columnIndex, board, directions) {
+//   let moves = [];
 
-  for (let i = 0; i < directions.length; i++) {
-    const destX = rowIndex + directions[i][0];
-    const destY = columnIndex + directions[i][1];
+//   for (let i = 0; i < directions.length; i++) {
+//     const destX = rowIndex + directions[i][0];
+//     const destY = columnIndex + directions[i][1];
 
-    if (isValidIndex(destX, destY)) {
-      const destinationCell = board[destX][destY];
-      if (destinationCell.owner == EMPTY) {
-        adjacentMoves.push([destX, destY]);
-      }
-    }
-  }
+//     if (isValidIndex(destX, destY)) {
+//       const destinationCell = board[destX][destY];
+//       if (destinationCell.owner == EMPTY) {
+//         moves.push([destX, destY]);
+//       }
+//     }
+//   }
 
-  return adjacentMoves;
-}
+//   return moves;
+// }
 
 export const findMoves = (rowIndex, columnIndex, boardData, currentPlayer) => {
   let possibleMoves = [];
@@ -99,34 +100,14 @@ export const findMoves = (rowIndex, columnIndex, boardData, currentPlayer) => {
     directions.push([1, 1]);
   }
 
-  //for active cell check all the possible direction it can move
-
-  // let dir;
-  // directions.forEach((direction) => {
-  //   if (isValidDirection(i, j, rowIndex, columnIndex, direction)) {
-  //     dir = direction;
-  //   }
-  // });
-
   //adjacent moves
-  for (let k = 0; k < directions.length; k++) {
-    const destX = rowIndex + directions[i][0];
-    const destY = columnIndex + directions[i][1];
-
-    if (isValidIndex(destX, destY)) {
-      const destinationCell = board[destX][destY];
-      if (destinationCell.owner == EMPTY) {
-        possibleMoves.push([destX, destY]);
-      }
-    }
-  }
+  const adjMoves = getAdjacentMoves(rowIndex, columnIndex, board, directions);
 
   //capture moves
-  const captureMoves = captureMoves(rowIndex, columnIndex, board, currentPlayer, directions);
+  const capMoves = getCaptureMoves(rowIndex, columnIndex, board, directions, currentPlayer);
 
-  //for normal cell the possible direction would be down and left or right
-  //for king cell the possible direction would be up/down and left/right
-
+  possibleMoves = [...adjMoves, ...capMoves];
+  return possibleMoves;
   //store all the possible moves for each cell
   /* 
     check for adjacent moves
