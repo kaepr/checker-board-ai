@@ -1,13 +1,27 @@
-import { CELLS_AMOUNT } from "../constants";
+import { BOARD_SIZE, CELLS_AMOUNT, COMPUTER } from "../constants";
 
 class RandomPlayer {
-  constructor(boardData) {
+  constructor(boardData, cellCount, ownCells) {
     this.board = boardData;
-    this.cells = CELLS_AMOUNT;
+    this.cellCount = cellCount;
+    this.cells = ownCells;
   }
 
   updateInfo(boardData) {
     this.board = boardData;
+
+    let currentCells = [];
+
+    for (let i = 0; i < BOARD_SIZE; i += 1) {
+      for (let j = 0; j < BOARD_SIZE; j += 1) {
+        if (boardData[i][j].owner === COMPUTER) {
+          currentCells.push(boardData[i][j]); // askdaslkdjaslkdjaskldjalsdjaslkdjaslkdjaslkdjalkdjasldjaslkdjaslkdj
+        }
+      }
+    }
+
+    this.cells = currentCells;
+    this.cellCount = currentCells.length;
   }
 
   findNextMove() {

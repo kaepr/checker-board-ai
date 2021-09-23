@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
-  EMPTY,
+  BOARD_SIZE,
   CELLS_AMOUNT,
+  EMPTY,
   PLAYER_1,
   PLAYER_2,
-  BOARD_SIZE,
 } from "../../constants";
 
 const initialCellState = {

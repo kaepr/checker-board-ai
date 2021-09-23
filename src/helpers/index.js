@@ -1,5 +1,5 @@
-import _ from "lodash";
-import { EMPTY, BOARD_SIZE } from "../constants";
+import _ from 'lodash';
+import { EMPTY, BOARD_SIZE, PLAYER_1 } from '../constants';
 
 const getInitiaCellState = () => {
   return {
@@ -10,12 +10,7 @@ const getInitiaCellState = () => {
   };
 };
 
-export const handleClick = (
-  rowIndex,
-  columnIndex,
-  boardData,
-  currentPlayer
-) => {
+export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => {
   const board = _.cloneDeep(boardData);
 
   // If the user clicks on empty space, or enemy's move, then ignore click
@@ -49,31 +44,49 @@ Show him all his possible next moves
 
 Returns an array of the next possible moves for provided indexes
 */
+function captureMoves(rowIndex, columnIndex, board, directions, currentPlayer) {
+  const possibleCaptureMoves = [];
+  for (let i = 0; i < directions.length; i++) {
+    const midX = rowIndex + directions[i][0];
+    const midY = columnIndex + directions[i][1];
+
+    const destX = rowIndex + directions[i][0] * 2;
+    const destY = columnIndex + directions[i][1] * 2;
+
+    if (isValidIndex(destX, destY) && isValidIndex(midX, midY)) {
+      const destinationCell = board[destX][destY];
+      const middleCell = board[midX][midY];
+      const isMiddleEnemy = middleCell.owner != currentPlayer && middleCell.owner != EMPTY;
+
+      if (destinationCell.owner == EMPTY && isMiddleEnemy) {
+        possibleMoves.push([destX, destY]);
+      }
+    }
+  }
+  return possibleCaptureMoves;
+}
+
+function adjacentMoves(rowIndex, columnIndex, board, directions) {
+  let adjacentMoves = [];
+
+  for (let i = 0; i < directions.length; i++) {
+    const destX = rowIndex + directions[i][0];
+    const destY = columnIndex + directions[i][1];
+
+    if (isValidIndex(destX, destY)) {
+      const destinationCell = board[destX][destY];
+      if (destinationCell.owner == EMPTY) {
+        adjacentMoves.push([destX, destY]);
+      }
+    }
+  }
+
+  return adjacentMoves;
+}
+
 export const findMoves = (rowIndex, columnIndex, boardData, currentPlayer) => {
-  // const board = _.cloneDeep(boardData);
-  // let i;
-  // let j;
-  // let found;
-  // for (i = 0; i < BOARD_SIZE; i++) {
-  //   for (j = 0; j < BOARD_SIZE; j++) {
-  //     if (board[i][j].isActive) {
-  //       found = true;
-  //       break;
-  //     }
-  //   }
-  //   if (found) {
-  //     break;
-  //   }
-  // }
-
-  // if (!found) {
-  //   return possibleMoves;
-  // }
-
-  
   let possibleMoves = [];
-
-  const originalCell = board[rowIndex][columnIndex];
+  const board = _.cloneDeep(boardData);
 
   let directions = [
     [-1, -1],
@@ -87,24 +100,29 @@ export const findMoves = (rowIndex, columnIndex, boardData, currentPlayer) => {
   }
 
   //for active cell check all the possible direction it can move
-  
-  let dir;
-  directions.forEach((direction) => {
-    if (isValidDirection(i, j, rowIndex, columnIndex, direction)) {
-      dir = direction;
-    }
-  });
-  
+
+  // let dir;
+  // directions.forEach((direction) => {
+  //   if (isValidDirection(i, j, rowIndex, columnIndex, direction)) {
+  //     dir = direction;
+  //   }
+  // });
+
   //adjacent moves
-  for (let i = 0; i < dir.length; i++){
-    for (let j = 0; j < dir[i].length; j++){
-      if (isValidDirection(rowIndex, columnIndex, rowIndex+dir[0], columnIndex+dir[1]) && originalCell.owner == EMPTY) {
-        possibleMoves.push([rowIndex+dir[0], columnIndex+dir[1]]);
+  for (let k = 0; k < directions.length; k++) {
+    const destX = rowIndex + directions[i][0];
+    const destY = columnIndex + directions[i][1];
+
+    if (isValidIndex(destX, destY)) {
+      const destinationCell = board[destX][destY];
+      if (destinationCell.owner == EMPTY) {
+        possibleMoves.push([destX, destY]);
       }
     }
   }
 
-  //
+  //capture moves
+  const captureMoves = captureMoves(rowIndex, columnIndex, board, currentPlayer, directions);
 
   //for normal cell the possible direction would be down and left or right
   //for king cell the possible direction would be up/down and left/right
@@ -129,16 +147,9 @@ export const findMoves = (rowIndex, columnIndex, boardData, currentPlayer) => {
       
     push all the moves into possible moves
      */
-
-  const board = _.cloneDeep(boardData);
 };
 
-export const executeMove = (
-  rowIndex,
-  columnIndex,
-  boardData,
-  currentPlayer
-) => {
+export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => {
   // Find that one cell which has isActive flag set to true
   const board = _.cloneDeep(boardData);
   let i;
@@ -156,8 +167,6 @@ export const executeMove = (
   if (!found) {
     return board;
   }
-
-  const originalCell = board[i][j];
 
   // Go from (i,j) to (rowIndex, columnIndex)
   // Delete the enemy cell in the way
@@ -206,13 +215,10 @@ export const executeMove = (
   board[rowIndex][columnIndex].isActive = false;
 };
 
-const isValidDirection = (
-  initialX,
-  initialY,
-  destinationX,
-  destinationY,
-  direction
-) => {
+/*
+Returns if it is possible to reach (destX,destY) from (srcX, srcY) using provided direction 
+*/
+const isValidDirection = (initialX, initialY, destinationX, destinationY, direction) => {
   for (let i = 0; i < 2; i += 1) {
     initialX += direction[0];
     initialY += direction[1];
