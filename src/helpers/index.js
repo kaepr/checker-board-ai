@@ -1,26 +1,32 @@
 import _ from "lodash";
 
 // Is click valid
-const handleClick = () => {};
+const handleClick = (rowIndex, columnIndex, boardData) => {
+  const board = _.cloneDeep(boardData);
+};
 
 // Is move valid ( in which does he wanna place, check for validity )
 
-const findMoves = (x, y, board) => {
-    /* 
-        for king 
-          (x-1,y-1)
-          (x-1,y+1)
-          (x+1,y-1)
-          (x+1,y+1)
+/*
+Assuming player has chosen his own cell
+Show him all his possible next moves
+*/
+const findMoves = (rowIndex, columnIndex, boardData) => {
+  /* 
+  for king 
+    (x-1,y-1)
+    (x-1,y+1)
+    (x+1,y-1)
+    (x+1,y+1)
 
-        for normal 
-          (x+1,y-1)
-          (x+1,y+1)
+  for normal 
+    (x+1,y-1)
+    (x+1,y+1)
     */
+  const board = _.cloneDeep(boardData);
 
-  const copy = _.cloneDeep(board);
   
-  
+
 };
 
 // is game won

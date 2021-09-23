@@ -3,7 +3,7 @@ import { BOARD_SIZE, EMPTY, PLAYER_1, PLAYER_2 } from "../../constants";
 
 const initialCellState = {
   owner: EMPTY,
-  showValidState: 0,
+  isValidNextMove: NEXT_MOVE_INVALID,
 };
 
 const initialState = {
