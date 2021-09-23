@@ -1,14 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  selectCount,
-  increment,
-  decrement,
-} from "./features/counter/counterSlice";
 
 import Board from "./components/Board";
 import {
-  initializeBoard,
+  initializeGame,
   selectBoard,
   selectMoveList,
 } from "./features/game/gameSlice";
@@ -20,11 +15,11 @@ function App() {
   const moveList = useSelector(selectMoveList);
 
   const initialize = () => {
-    dispatch(initializeBoard());
+    dispatch(initializeGame());
   };
 
   useEffect(() => {
-    dispatch(initializeBoard());
+    dispatch(initializeGame());
   }, []);
 
   return (
