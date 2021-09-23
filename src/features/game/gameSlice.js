@@ -1,11 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
-import {
-  BOARD_SIZE,
-  CELLS_AMOUNT,
-  EMPTY,
-  PLAYER_1,
-  PLAYER_2,
-} from "../../constants";
+import { createSlice } from '@reduxjs/toolkit';
+import { BOARD_SIZE, CELLS_AMOUNT, EMPTY, PLAYER_1, PLAYER_2 } from '../../constants';
 
 const initialCellState = {
   owner: EMPTY,
@@ -56,7 +50,7 @@ const createNewBoard = (intializeInfo) => {
 };
 
 const gameSlice = createSlice({
-  name: "game",
+  name: 'game',
   initialState,
   reducers: {
     initializeGame: {

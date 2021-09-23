@@ -1,4 +1,3 @@
 # Checker Board AI
 
 ## Steps
-

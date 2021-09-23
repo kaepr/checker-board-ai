@@ -1,4 +1,4 @@
-import { BOARD_SIZE, CELLS_AMOUNT, COMPUTER } from "../constants";
+import { BOARD_SIZE, CELLS_AMOUNT, COMPUTER } from '../constants';
 
 class RandomPlayer {
   constructor(boardData, cellCount, ownCells) {
