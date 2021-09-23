@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Board from "./components/Board";
+import MoveList from "./components/MoveList";
 import {
   initializeGame,
   selectBoard,
   selectMoveList,
 } from "./features/game/gameSlice";
-import MoveList from "./components/MoveList";
 
 function App() {
   const dispatch = useDispatch();
