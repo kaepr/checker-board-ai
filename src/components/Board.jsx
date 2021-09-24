@@ -1,18 +1,11 @@
-import React from "react";
-import Cell from "./Cell";
+import React from 'react';
+import Cell from './Cell';
 
 const Row = ({ rowData, xPosition }) => {
   return (
     <div className="game__row">
       {rowData.map((item, index) => {
-        return (
-          <Cell
-            data={item}
-            key={index}
-            yPosition={index}
-            xPosition={xPosition}
-          />
-        );
+        return <Cell data={item} key={index} yPosition={index} xPosition={xPosition} />;
       })}
     </div>
   );

@@ -1,7 +1,6 @@
-import React from "react";
+import React from 'react';
 
 const MoveList = ({ moveList }) => {
-  console.log(moveList);
   return (
     <div className="moves__list">
       {moveList.map((x, index) => {

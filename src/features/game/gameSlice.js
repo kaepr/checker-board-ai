@@ -58,7 +58,6 @@ const gameSlice = createSlice({
     initializeGame: {
       reducer(state, { payload }) {
         state.board = payload.board;
-        state.currentPlayer = payload.currentPlayer;
         state.loading = payload.loading;
         state.playerOneCells = payload.playerOneCells;
         state.playerTwoCells = payload.playerTwoCells;
@@ -70,7 +69,6 @@ const gameSlice = createSlice({
           payload: {
             board: createNewBoard(),
             loading: false,
-            currentPlayer: PLAYER_1,
             playerOneCells: CELLS_AMOUNT,
             playerTwoCells: CELLS_AMOUNT,
             opponentCells: CELLS_AMOUNT,
@@ -106,7 +104,7 @@ const gameSlice = createSlice({
     },
     changeWhoseTurn(state, action) {
       state.whoseTurn = action.payload;
-    }
+    },
   },
 });
 

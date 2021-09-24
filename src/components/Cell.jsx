@@ -1,8 +1,8 @@
-import React, { useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { PLAYER_1, PLAYER_2, COMPUTER } from "../constants";
-import { handleClick } from "../helpers";
-import { selectBoard, setBoard } from "../features/game/gameSlice";
+import React, { useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { PLAYER_1, PLAYER_2, COMPUTER } from '../constants';
+import { handleClick } from '../helpers';
+import { selectBoard, setBoard } from '../features/game/gameSlice';
 
 const getCheckerPieceClass = (data) => {
   const classList = ['checker__piece'];
@@ -20,27 +20,25 @@ const getCheckerPieceClass = (data) => {
   }
 
   if (data.isKing) {
-    classList.push('checker__piece--king')
+    classList.push('checker__piece--king');
   }
 
   if (data.isActive) {
-    classList.push('checker__piece--active')
+    classList.push('checker__piece--active');
   }
 
   if (data.isValidNextMove) {
-    classList.push('checker__piece--valid_move')
+    classList.push('checker__piece--valid_move');
   }
 
   return classList.join(' ');
-}
+};
 
 const Cell = ({ data, xPosition, yPosition }) => {
   const checkerClassNames = useMemo(
     () => getCheckerPieceClass(data),
     [data.owner, data.isKing, data.isActive, data.isValidNextMove]
   );
-
-  // const checkerClassNames = getCheckerPieceClass(data);
 
   const dispatch = useDispatch();
   const board = useSelector(selectBoard);
@@ -66,10 +64,11 @@ const Cell = ({ data, xPosition, yPosition }) => {
   };
 
   return (
-    <div className={`game__cell ${(xPosition + yPosition) % 2 == 0 ? 'cell__dark' : 'cell__grey'
-      }`} onClick={handlePlayerClick}>
+    <div
+      className={`game__cell ${(xPosition + yPosition) % 2 == 0 ? 'cell__dark' : 'cell__grey'}`}
+      onClick={handlePlayerClick}
+    >
       <div className={checkerClassNames} />
-      {/* {getCheckerPiece(data.owner)} */}
     </div>
   );
 };
