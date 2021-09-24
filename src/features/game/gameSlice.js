@@ -12,7 +12,7 @@ const initialState = {
   board: [],
   playerOneMoves: [],
   loading: false,
-  currentPlayer: PLAYER_1,
+  // currentPlayer: PLAYER_1,
   playerOneCells: CELLS_AMOUNT,
   playerTwoCells: CELLS_AMOUNT,
   opponentCells: CELLS_AMOUNT,
@@ -100,6 +100,12 @@ const gameSlice = createSlice({
     },
     setBoard(state, action) {
       state.board = action.payload;
+    },
+    changeTurnCount(state, action) {
+      state.turnCount = action.payload;
+    },
+    changeWhoseTurn(state, action) {
+      state.whoseTurn = action.payload;
     }
   },
 });
@@ -112,7 +118,9 @@ export const {
   changeOpponentCells,
   changePlayerOneCells,
   changePlayerTwoCells,
-  setBoard
+  setBoard,
+  changeWhoseTurn,
+  changeTurnCount,
 } = gameSlice.actions;
 
 export const selectBoard = (state) => state.game.board;
