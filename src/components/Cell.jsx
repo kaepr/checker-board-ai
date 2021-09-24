@@ -1,33 +1,59 @@
-import React from "react";
-import { useDispatch } from "react-redux";
-import { handlePlayerInput } from "../features/game/gameSlice";
+import React, { useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { PLAYER_1, PLAYER_2, COMPUTER } from "../constants";
+import { handleClick } from "../helpers";
+import { selectBoard } from "../features/game/gameSlice";
 
-const getCheckerPiece = (owner) => {
-  switch (owner) {
-    case PLAYER_1:
-      return <div className="checker__piece checker__piece--first" />;
-    case PLAYER_2:
-      return <div className="checker__piece checker__piece--second" />;
-    case COMPUTER:
-      return <div className="checker__piece checker__piece--computer" />;
-    default:
-      return null;
+const getCheckerPieceClass = (data) => {
+  console.log('lol');
+
+  let classList = ['checker__piece'];
+
+  if (data.owner === PLAYER_1) {
+    classList.push('checker__piece--first');
   }
-};
+
+  if (data.owner === PLAYER_2) {
+    classList.push('checker__piece--second');
+  }
+
+  if (data.owner === COMPUTER) {
+    classList.push('checker__piece--second');
+  }
+
+  if (data.isKing) {
+    classList.push('checker__piece--king')
+  }
+
+  if (data.isActive) {
+    classList.push('checker__piece--active')
+  }
+
+  if (data.isValidNextMove) {
+    classList.push('checker__piece--valid_move')
+  }
+
+  return classList.join(' ');
+}
 
 const Cell = ({ data, xPosition, yPosition }) => {
-  let cellColor;
-  if ((xPosition + yPosition) % 2 == 0) {
-    cellColor = "cell__dark";
-  } else {
-    cellColor = "cell__grey";
-  }
+  const checkerClassNames = useMemo(
+    () => getCheckerPieceClass(data),
+    [data.owner, data.isKing, data.isActive, data.isValidNextMove]
+  );
 
   const dispatch = useDispatch();
+  const board = useSelector(selectBoard);
 
-  const handleClick = (e) => {
+  const handlePlayerClick = (e) => {
     e.stopPropagation();
+
+    // if it fails, result will be falsy
+    // else it will be the new game board
+    const result = handleClick(x, y, board, PLAYER_1);
+
+    if (!result) return;
+
     dispatch(
       handlePlayerInput({
         moveCoordinates: [xPosition, yPosition],
@@ -36,8 +62,11 @@ const Cell = ({ data, xPosition, yPosition }) => {
   };
 
   return (
-    <div className={"game__cell " + cellColor} onClick={handleClick}>
-      {getCheckerPiece(data.owner)}
+    <div className={`game__cell ${
+      (xPosition + yPosition) % 2 == 0 ? 'cell__dark' : 'cell__grey'
+    }`} onClick={handlePlayerClick}>
+      <div className={checkerClassNames} />
+      {/* {getCheckerPiece(data.owner)} */}
     </div>
   );
 };

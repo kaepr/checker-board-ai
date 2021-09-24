@@ -16,6 +16,8 @@ const initialState = {
   playerOneCells: CELLS_AMOUNT,
   playerTwoCells: CELLS_AMOUNT,
   opponentCells: CELLS_AMOUNT,
+  turnCount: 0,
+  whoseTurn: PLAYER_1,
 };
 
 const createNewBoard = (intializeInfo) => {
@@ -54,13 +56,14 @@ const gameSlice = createSlice({
   initialState,
   reducers: {
     initializeGame: {
-      reducer(state, action) {
-        state.board = action.payload.board;
-        state.currentPlayer = action.payload.currentPlayer;
-        state.loading = action.payload.loading;
-        state.playerOneCells = action.payload.playerOneCells;
-        state.playerTwoCells = action.payload.playerTwoCells;
-        state.opponentCells = action.payload.opponentCells;
+      reducer(state, { payload }) {
+        state.board = payload.board;
+        state.currentPlayer = payload.currentPlayer;
+        state.loading = payload.loading;
+        state.playerOneCells = payload.playerOneCells;
+        state.playerTwoCells = payload.playerTwoCells;
+        state.opponentCells = payload.opponentCells;
+        state.turnCount = payload.turnCount;
       },
       prepare() {
         return {
@@ -71,6 +74,8 @@ const gameSlice = createSlice({
             playerOneCells: CELLS_AMOUNT,
             playerTwoCells: CELLS_AMOUNT,
             opponentCells: CELLS_AMOUNT,
+            turnCount: 0,
+            whoseTurn: 
           },
         };
       },

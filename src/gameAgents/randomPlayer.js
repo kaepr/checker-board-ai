@@ -15,7 +15,7 @@ class RandomPlayer {
     for (let i = 0; i < BOARD_SIZE; i += 1) {
       for (let j = 0; j < BOARD_SIZE; j += 1) {
         if (boardData[i][j].owner === COMPUTER) {
-          currentCells.push(boardData[i][j]); // askdaslkdjaslkdjaskldjalsdjaslkdjaslkdjaslkdjalkdjasldjaslkdjaslkdj
+          currentCells.push(boardData[i][j]); 
         }
       }
     }

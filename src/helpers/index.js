@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { EMPTY, BOARD_SIZE, PLAYER_1 } from '../constants';
+import { EMPTY, BOARD_SIZE, PLAYER_1, PLAYER_2, COMPUTER } from '../constants';
 import { getAdjacentMoves, getCaptureMoves } from './findHelpers';
 
 const getInitiaCellState = () => {
@@ -30,11 +30,35 @@ export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => 
     return board;
   }
 
-  // Now, user clicked on its own cell,
+  // Clicked on a cell whose is-valid-next-move is true
+  // Now execute that move
+  if(cellData.isValidNextMove) {
+
+  }
+
+
+  // Now, user clicked on its own cell, this makes the cell active
   // This will show all the next possible valid positions from this cell
   // modify board adding cells which can be the next possible move
 
-  // Clicked on a cell whose is valid next move is true
+  // 1. make all previous is valid next move to false
+  for (let i = 0; i < BOARD_SIZE; i += 1) {
+    for (let j = 0; j < BOARD_SIZE; j += 1) {
+      board[i][j].isValidNextMove = false;
+      board[i][j].isActive = false;
+    }
+  }
+
+  // 2. Set provided cell to be is active
+  board[rowIndex][columnIndex].isActive = true;
+
+  // 3. Find all the next valid moves for this cell
+  const nextMoves = findMoves(rowIndex, columnIndex, board, currentPlayer);
+
+  // for()
+
+
+
 };
 
 // Is move valid ( in which does he wanna place, check for validity )
@@ -45,46 +69,6 @@ Show him all his possible next moves
 
 Returns an array of the next possible moves for provided indexes
 */
-// function getCaptureMoves(rowIndex, columnIndex, board, directions, currentPlayer) {
-//   const possibleCaptureMoves = [];
-//   for (let i = 0; i < directions.length; i++) {
-//     const midX = rowIndex + directions[i][0];
-//     const midY = columnIndex + directions[i][1];
-
-//     const destX = rowIndex + directions[i][0] * 2;
-//     const destY = columnIndex + directions[i][1] * 2;
-
-//     if (isValidIndex(destX, destY) && isValidIndex(midX, midY)) {
-//       const destinationCell = board[destX][destY];
-//       const middleCell = board[midX][midY];
-//       const isMiddleEnemy = middleCell.owner != currentPlayer && middleCell.owner != EMPTY;
-
-//       if (destinationCell.owner == EMPTY && isMiddleEnemy) {
-//         possibleCaptureMoves.push([destX, destY]);
-//       }
-//     }
-//   }
-//   return possibleCaptureMoves;
-// }
-
-// function getAdjacentMoves(rowIndex, columnIndex, board, directions) {
-//   let moves = [];
-
-//   for (let i = 0; i < directions.length; i++) {
-//     const destX = rowIndex + directions[i][0];
-//     const destY = columnIndex + directions[i][1];
-
-//     if (isValidIndex(destX, destY)) {
-//       const destinationCell = board[destX][destY];
-//       if (destinationCell.owner == EMPTY) {
-//         moves.push([destX, destY]);
-//       }
-//     }
-//   }
-
-//   return moves;
-// }
-
 export const findMoves = (rowIndex, columnIndex, boardData, currentPlayer) => {
   let possibleMoves = [];
   const board = _.cloneDeep(boardData);
@@ -108,26 +92,6 @@ export const findMoves = (rowIndex, columnIndex, boardData, currentPlayer) => {
 
   possibleMoves = [...adjMoves, ...capMoves];
   return possibleMoves;
-  //store all the possible moves for each cell
-  /* 
-    check for adjacent moves
-      if adjacent cell is not of bound and not occupied
-        then add the cell to the list of possible moves
-      
-    check for jump moves
-      check if king cell or not accordingly check for jumps
-      if the active cell can capture any other enemy cell then add the cell to list of possible jump moves
-
-    check for multiple jump moves
-      if the double jump moves are possible and the space is free then add the cell to another list 
-         make a counter for checking if the multiple jumps is possible 
-    
-    if multiple jumps found then call this function on those cells to get more moves
-    
-    
-      
-    push all the moves into possible moves
-     */
 };
 
 export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => {
@@ -223,9 +187,67 @@ const isValidIndex = (row, col) => {
   return false;
 };
 
-// is game won
-export const isGameWon = () => {
+// {
+//   isGameDraw: false,
+//   player1Won: false,
+// }
+export const isGameWon = (boardData, currentPlayer) => {
   // Check if all cells are of one type
-  // Check if user has any valid moves next or not
+  const board = _.cloneDeep(boardData);
+  let player1Pieces = 0;
+  let player2Pieces = 0;
+  for (let i = 0; i < BOARD_SIZE; i++) {
+    for (let j = 0; j < BOARD_SIZE; j++) {
+      if (board[i][j].owner == PLAYER_1)
+        player1Pieces++;
+      if (board[i][j].owner != EMPTY || board[i][j].owner == (PLAYER_2 || COMPUTER))
+        player2Pieces++;
+    }
+  }
+  //TODO return object 
+  if (player1Pieces == 0) {
+    return PLAYER_2;
+  }
+  if (player2Pieces == 0) {
+    return PLAYER_1;
+  }
+  // Check if current player has any valid moves next or not
+  let possibleMovesP1 = false;
+  let possibleMovesP2 = false;
+  for (let i = 0; i < BOARD_SIZE; i++) {
+    for (let j = 0; j < BOARD_SIZE; j++) {
+      if (board[i][j].owner == PLAYER_1 && !possibleMovesP1) {
+        let possMoves = findMoves(i, j, board, PLAYER_1);
+        if (possMoves.length > 0) {
+          possibleMovesP1 = true;
+        }
+      }
+
+      if (board[i][j].owner == (PLAYER_2 || COMPUTER) && !possibleMovesP2) {
+        let possMoves = findMoves(i, j, board, PLAYER_2);
+        if (possMoves.length > 0) {
+          possibleMovesP2 = true;
+        }
+      }
+    }
+  }
+  if (currentPlayer == PLAYER_1 && !possibleMovesP1)
+    return PLAYER_2;
+  else if ((currentPlayer == PLAYER_2 || COMPUTER) && !possibleMovesP2)
+    return PLAYER_1;
+
+
   // Check for draw conditions
+  
+
+  /*  
+    win conditions
+      1. all the pieces of opponent are captured
+      2. opponent can't make a valid move 
+
+    draw conditions
+      1. Neither player has advanced an uncrowned man towards the king-row during the previous 50 moves
+      2. No pieces have been removed from the board during the previous 50 moves.
+  */
+
 };
