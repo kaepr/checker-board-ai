@@ -75,7 +75,7 @@ const gameSlice = createSlice({
             playerTwoCells: CELLS_AMOUNT,
             opponentCells: CELLS_AMOUNT,
             turnCount: 0,
-            whoseTurn: 
+            whoseTurn: PLAYER_1,
           },
         };
       },
@@ -98,6 +98,9 @@ const gameSlice = createSlice({
     changeOpponentCells(state, action) {
       state.opponentCells = action.payload;
     },
+    setBoard(state, action) {
+      state.board = action.payload;
+    }
   },
 });
 
@@ -109,6 +112,7 @@ export const {
   changeOpponentCells,
   changePlayerOneCells,
   changePlayerTwoCells,
+  setBoard
 } = gameSlice.actions;
 
 export const selectBoard = (state) => state.game.board;

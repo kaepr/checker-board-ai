@@ -115,3 +115,7 @@
 .checker__piece.checker__piece--second {
   background: plum;
 }
+
+.checker__piece.checker__piece--valid_move {
+  background: rgb(0, 255, 42);
+}

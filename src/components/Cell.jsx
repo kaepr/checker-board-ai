@@ -2,12 +2,10 @@ import React, { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { PLAYER_1, PLAYER_2, COMPUTER } from "../constants";
 import { handleClick } from "../helpers";
-import { selectBoard } from "../features/game/gameSlice";
+import { selectBoard, setBoard } from "../features/game/gameSlice";
 
 const getCheckerPieceClass = (data) => {
-  console.log('lol');
-
-  let classList = ['checker__piece'];
+  const classList = ['checker__piece'];
 
   if (data.owner === PLAYER_1) {
     classList.push('checker__piece--first');
@@ -37,10 +35,13 @@ const getCheckerPieceClass = (data) => {
 }
 
 const Cell = ({ data, xPosition, yPosition }) => {
+  // console.log('data ', data.owner, xPosition, yPosition);
   const checkerClassNames = useMemo(
     () => getCheckerPieceClass(data),
     [data.owner, data.isKing, data.isActive, data.isValidNextMove]
   );
+
+  // const checkerClassNames = getCheckerPieceClass(data);
 
   const dispatch = useDispatch();
   const board = useSelector(selectBoard);
@@ -48,23 +49,26 @@ const Cell = ({ data, xPosition, yPosition }) => {
   const handlePlayerClick = (e) => {
     e.stopPropagation();
 
+    console.log('data, positions', data, xPosition, yPosition);
+
     // if it fails, result will be falsy
     // else it will be the new game board
-    const result = handleClick(x, y, board, PLAYER_1);
+    const result = handleClick(xPosition, yPosition, board, PLAYER_1);
 
     if (!result) return;
 
-    dispatch(
-      handlePlayerInput({
-        moveCoordinates: [xPosition, yPosition],
-      })
-    );
+    dispatch(setBoard(result));
+
+    // dispatch(
+    //   handlePlayerInput({
+    //     moveCoordinates: [xPosition, yPosition],
+    //   })
+    // );
   };
 
   return (
-    <div className={`game__cell ${
-      (xPosition + yPosition) % 2 == 0 ? 'cell__dark' : 'cell__grey'
-    }`} onClick={handlePlayerClick}>
+    <div className={`game__cell ${(xPosition + yPosition) % 2 == 0 ? 'cell__dark' : 'cell__grey'
+      }`} onClick={handlePlayerClick}>
       <div className={checkerClassNames} />
       {/* {getCheckerPiece(data.owner)} */}
     </div>
