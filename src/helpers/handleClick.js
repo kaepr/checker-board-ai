@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { EMPTY, BOARD_SIZE } from '../constants';
-import { findMoves } from '.';
+import { findMoves, executeMove } from '.';
 
 export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => {
     const board = _.cloneDeep(boardData);
@@ -16,16 +16,17 @@ export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => 
     }
 
     // Or they clicked enemy cell
-    if (cellData.owner != currentPlayer) {
+    if (cellData.owner != currentPlayer && cellData.owner != EMPTY) {
         return board;
     }
 
     // Clicked on a cell whose is-valid-next-move is true
     // Now execute that move
     if (cellData.isValidNextMove) {
+        const newBoard = executeMove(rowIndex, columnIndex, board, currentPlayer);
 
+        return newBoard;
     }
-
 
     // Now, user clicked on its own cell, this makes the cell active
     // This will show all the next possible valid positions from this cell

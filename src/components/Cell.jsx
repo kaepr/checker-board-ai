@@ -35,7 +35,6 @@ const getCheckerPieceClass = (data) => {
 }
 
 const Cell = ({ data, xPosition, yPosition }) => {
-  // console.log('data ', data.owner, xPosition, yPosition);
   const checkerClassNames = useMemo(
     () => getCheckerPieceClass(data),
     [data.owner, data.isKing, data.isActive, data.isValidNextMove]

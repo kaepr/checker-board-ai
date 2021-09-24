@@ -1,6 +1,6 @@
 import { EMPTY, BOARD_SIZE } from "../constants";
 
-export const getInitiaCellState = () => {
+export const getInitialCellState = () => {
   return {
     owner: EMPTY,
     isActive: false,

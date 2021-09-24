@@ -119,3 +119,7 @@
 .checker__piece.checker__piece--valid_move {
   background: rgb(0, 255, 42);
 }
+
+.checker__piece--active {
+  border: 2px solid red;
+}

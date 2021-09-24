@@ -2,7 +2,6 @@ import React from "react";
 import Cell from "./Cell";
 
 const Row = ({ rowData, xPosition }) => {
-  console.log('row data = ', rowData);
   return (
     <div className="game__row">
       {rowData.map((item, index) => {
@@ -23,8 +22,6 @@ const Board = ({ boardData }) => {
   if (boardData.length === 0) {
     return <div>Board not initialized</div>;
   }
-
-  console.log('board data ', boardData);
 
   return (
     <div className="game__container">
