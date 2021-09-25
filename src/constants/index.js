@@ -5,3 +5,4 @@ export const PLAYER_2 = 2;
 export const COMPUTER = 3;
 export const CELLS_AMOUNT = 12;
 export const DRAW = 0;
+export const GAME_END = -1;

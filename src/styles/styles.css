@@ -126,6 +126,10 @@
   transform: scale(1.05);
 }
 
+.checker__piece--possible_capture {
+  border: 2px solid burlywood;
+}
+
 .checker__piece.checker__piece--king {
   color: white;
 }

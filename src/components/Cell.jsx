@@ -38,6 +38,10 @@ const getCheckerPieceClass = (data) => {
     classList.push('checker__piece--valid_move');
   }
 
+  if (data.hasPossibleCapture) {
+    classList.push('checker__piece--possible_capture');
+  }
+
   return classList.join(' ');
 };
 

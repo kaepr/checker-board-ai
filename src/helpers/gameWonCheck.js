@@ -2,7 +2,7 @@
 //   isGameDraw: false,
 //   player1Won: false,
 // }
-import { BOARD_SIZE, PLAYER_1, COMPUTER, PLAYER_2, DRAW } from "../constants";
+import { BOARD_SIZE, PLAYER_1, COMPUTER, PLAYER_2, DRAW, GAME_END } from "../constants";
 
 export const isGameWon = (boardData, currentPlayer) => {
     // Check if all cells are of one type
@@ -47,7 +47,8 @@ export const isGameWon = (boardData, currentPlayer) => {
 
     if ((currentPlayer == PLAYER_1 && !possibleMovesP1) || ((currentPlayer == PLAYER_2 || COMPUTER) && !possibleMovesP2))
         return DRAW;
-
+    else
+        return GAME_END;
     // Check for draw conditions
 
 

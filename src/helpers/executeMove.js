@@ -57,7 +57,7 @@ export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => 
     isActive: false,
   };
 
-  // board[i][j].owner = EMPTY
+  // board[i][j].owner = EMPTY;
   // board[i][j].isKing = false;
 
   if (enemyX == rowIndex && columnIndex == enemyY) {
@@ -72,6 +72,7 @@ export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => 
     for (let j = 0; j < BOARD_SIZE; j += 1) {
       board[i][j].isValidNextMove = false;
       board[i][j].isActive = false;
+      board[i][j].hasPossibleCapture = false;
     }
   }
 

@@ -48,6 +48,10 @@ export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => 
     }
   }
 
+  startPositions.forEach((move) => {
+    board[move[0]][move[1]].hasPossibleCapture = true;
+  });
+
   console.log('all possible capturable move list', allCapturablesMoves);
 
   // TODO Finish Logic here
@@ -67,6 +71,7 @@ export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => 
         for (let j = 0; j < BOARD_SIZE; j += 1) {
           board[i][j].isValidNextMove = false;
           board[i][j].isActive = false;
+          board[i][j].hasPossibleCapture = false;
         }
       }
 
@@ -84,7 +89,6 @@ export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => 
     }
 
     return createResponse(board, false, false);
-
   }
 
   // Clicked on a cell whose is-valid-next-move is true
@@ -103,6 +107,7 @@ export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => 
     for (let j = 0; j < BOARD_SIZE; j += 1) {
       board[i][j].isValidNextMove = false;
       board[i][j].isActive = false;
+      board[i][j].hasPossibleCapture = false;
     }
   }
 
