@@ -1,4 +1,5 @@
-import { EMPTY, BOARD_SIZE } from '../constants';
+import { upperFirst } from 'lodash';
+import { EMPTY, BOARD_SIZE, PLAYER_1 } from '../constants';
 
 export const getInitialCellState = () => {
   return {
@@ -7,6 +8,32 @@ export const getInitialCellState = () => {
     isValidNextMove: false,
     isKing: false,
   };
+};
+
+/*
+Get all directions for provided cell
+*/
+export const getDirections = (currentPlayer) => {
+  let directions = [];
+  if (currentPlayer == PLAYER_1) {
+    directions.push([-1, -1]);
+    directions.push([-1, 1]);
+    if (board[rowIndex][columnIndex].isKing) {
+      // Also check for backward position
+      directions.push([1, -1]);
+      directions.push([1, 1]);
+    }
+  } else {
+    directions.push([1, -1]);
+    directions.push([1, 1]);
+    if (board[rowIndex][columnIndex].isKing) {
+      // Also check for backward position
+      directions.push([-1, -1]);
+      directions.push([-1, 1]);
+    }
+  }
+
+  
 };
 
 /*

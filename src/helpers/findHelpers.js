@@ -1,5 +1,5 @@
 import { EMPTY, PLAYER_1 } from '../constants';
-import _ from 'lodash';
+import { cloneDeep } from 'lodash';
 import { isValidIndex, isValidDirection } from './utils';
 
 export const getCaptureMoves = (rowIndex, columnIndex, board, directions, currentPlayer) => {
@@ -42,6 +42,11 @@ export const getAdjacentMoves = (rowIndex, columnIndex, board, directions) => {
   return moves;
 };
 
+/* 
+  forceful capture
+
+*/
+
 /*
 Assuming player has chosen his own cell
 Show him all his possible next moves
@@ -51,7 +56,7 @@ Returns an array of the next possible moves for provided indexes
 
 export const findMoves = (rowIndex, columnIndex, boardData, currentPlayer) => {
   let possibleMoves = [];
-  const board = _.cloneDeep(boardData);
+  const board = cloneDeep(boardData);
   let directions = [];
   if (currentPlayer == PLAYER_1) {
     directions.push([-1, -1]);
@@ -81,11 +86,15 @@ export const findMoves = (rowIndex, columnIndex, boardData, currentPlayer) => {
   //   directions.push([1, -1]);
   //   directions.push([1, 1]);
   // }
-  //adjacent moves
-  const adjMoves = getAdjacentMoves(rowIndex, columnIndex, board, directions);
-
   //capture moves
   const capMoves = getCaptureMoves(rowIndex, columnIndex, board, directions, currentPlayer);
+  if (capMoves.length > 0) {
+    possibleMoves = capMoves;
+    return possibleMoves;
+  }
+
+  //adjacent moves
+  const adjMoves = getAdjacentMoves(rowIndex, columnIndex, board, directions);
 
   possibleMoves = [...adjMoves, ...capMoves];
 

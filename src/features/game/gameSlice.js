@@ -125,5 +125,6 @@ export const selectBoard = (state) => state.game.board;
 export const selectMoveList = (state) => state.game.playerOneMoves;
 export const selectLoading = (state) => state.game.loading;
 export const selectWhoseTurn = (state) => state.game.whoseTurn;
+export const selectTurnCount = (state) => state.game.turnCount;
 
 export default gameSlice.reducer;

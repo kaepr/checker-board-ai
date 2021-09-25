@@ -1,6 +1,6 @@
-import _, { create } from 'lodash';
+import { cloneDeep, create } from 'lodash';
 import { EMPTY, BOARD_SIZE } from '../constants';
-import { findMoves } from './findHelpers';
+import { findMoves, getCaptureMoves } from './findHelpers';
 import { executeMove } from './executeMove';
 
 const createResponse = (boardData, isSuccessful, wasExecuted = false) => {
@@ -12,7 +12,7 @@ const createResponse = (boardData, isSuccessful, wasExecuted = false) => {
 };
 
 export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => {
-  const board = _.cloneDeep(boardData);
+  const board = cloneDeep(boardData);
 
   // If the user clicks on empty space, or enemy's move, then ignore click
 
@@ -27,6 +27,15 @@ export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => 
   // Or they clicked enemy cell
   if (cellData.owner != currentPlayer && cellData.owner != EMPTY) {
     return createResponse(board, false);
+  }
+
+  // For call of current Player, of all capturables moves possible
+  let allCapturablesMoves = [];
+  for (let i = 0; i < BOARD_SIZE; i += 1) {
+    for (let j = 0; j < BOARD_SIZE; j += 1) {
+      const 
+      const curCapturablesMoves = getCaptureMoves(i, j, board, currentPlayer);
+    }
   }
 
   // Clicked on a cell whose is-valid-next-move is true
