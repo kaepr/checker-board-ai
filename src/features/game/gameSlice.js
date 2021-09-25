@@ -13,7 +13,6 @@ const initialState = {
   board: [],
   playerOneMoves: [],
   loading: false,
-  // currentPlayer: PLAYER_1,
   playerOneCells: CELLS_AMOUNT,
   playerTwoCells: CELLS_AMOUNT,
   opponentCells: CELLS_AMOUNT,
@@ -85,9 +84,6 @@ const gameSlice = createSlice({
     setLoading(state, action) {
       state.loading = action.payload;
     },
-    setPlayer(state, action) {
-      state.currentPlayer = action.payload;
-    },
     changePlayerOneCells(state, action) {
       state.playerOneCells = action.payload;
     },
@@ -110,7 +106,6 @@ const gameSlice = createSlice({
 });
 
 export const {
-  setPlayer,
   setLoading,
   handlePlayerInput,
   initializeGame,

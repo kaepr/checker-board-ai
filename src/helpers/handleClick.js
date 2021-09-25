@@ -1,7 +1,7 @@
-import { cloneDeep, create } from 'lodash';
-import { EMPTY, BOARD_SIZE } from '../constants';
-import { findMoves, getCaptureMoves } from './findHelpers';
+import { cloneDeep } from 'lodash';
+import { BOARD_SIZE, EMPTY } from '../constants';
 import { executeMove } from './executeMove';
+import { findMoves, getCaptureMoves } from './findHelpers';
 import { getDirections } from './utils';
 
 const createResponse = (boardData, isSuccessful, wasExecuted = false) => {

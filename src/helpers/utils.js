@@ -1,4 +1,3 @@
-import { upperFirst } from 'lodash';
 import { EMPTY, BOARD_SIZE, PLAYER_1 } from '../constants';
 
 export const getInitialCellState = () => {

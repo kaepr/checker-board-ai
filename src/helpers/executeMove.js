@@ -1,10 +1,10 @@
-import _ from 'lodash';
+import { cloneDeep } from 'lodash';
 import { BOARD_SIZE, EMPTY, PLAYER_1, COMPUTER, PLAYER_2 } from '../constants';
 import { isValidDirection, isValidIndex, getInitialCellState, getDirections } from './utils';
 
 export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => {
   // Find that one cell which has isActive flag set to true
-  const board = _.cloneDeep(boardData);
+  const board = cloneDeep(boardData);
 
   let i;
   let j;
@@ -49,7 +49,7 @@ export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => 
   // board[rowIndex][columnIndex].owner = board[i][j].owner;
   // board[rowIndex][columnIndex].isKing = board[i][j].isKing;
 
-  // TODO Something, while doing forceful check
+  // TODO Maybe change this later when implementing forceful captures
   board[rowIndex][columnIndex] = {
     owner: board[i][j].owner,
     isKing: board[i][j].isKing,
