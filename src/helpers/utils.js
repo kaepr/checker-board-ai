@@ -1,4 +1,4 @@
-import { EMPTY, BOARD_SIZE } from "../constants";
+import { EMPTY, BOARD_SIZE } from '../constants';
 
 export const getInitialCellState = () => {
   return {
@@ -21,7 +21,7 @@ export const isValidDirection = (initialX, initialY, destinationX, destinationY,
       return false;
     }
 
-    if (initialX === destinationX && initialY == destinationY) {
+    if (initialX === destinationX && initialY === destinationY) {
       return true;
     }
   }

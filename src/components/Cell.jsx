@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { PLAYER_1, PLAYER_2, COMPUTER } from '../constants';
+import { PLAYER_1, PLAYER_2, COMPUTER, EMPTY } from '../constants';
 import { handleClick } from '../helpers';
 import {
   changeTurnCountByAmount,
@@ -26,7 +26,7 @@ const getCheckerPieceClass = (data) => {
     classList.push('checker__piece--second');
   }
 
-  if (data.isKing) {
+  if (data.isKing && data.owner != EMPTY) {
     classList.push('checker__piece--king');
   }
 
@@ -37,8 +37,6 @@ const getCheckerPieceClass = (data) => {
   if (data.isValidNextMove) {
     classList.push('checker__piece--valid_move');
   }
-
-  classList.push('checker__piece--king');
 
   return classList.join(' ');
 };

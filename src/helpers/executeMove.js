@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { BOARD_SIZE, EMPTY, PLAYER_1 } from '../constants';
+import { BOARD_SIZE, EMPTY, PLAYER_1, COMPUTER, PLAYER_2 } from '../constants';
 import { isValidDirection, isValidIndex, getInitialCellState } from './utils';
 
 export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => {
@@ -21,15 +21,35 @@ export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => 
     }
   }
 
+  console.log('is active cell', board[i][j]);
+
   // Go from (i,j) to (rowIndex, columnIndex)
   // Delete the enemy cell in the way
 
   let directions = [];
 
+  //   if (currentPlayer == PLAYER_1) {
+  //     directions.push([-1, -1]);
+  //     directions.push([-1, 1]);
+  //     if (board[rowIndex][columnIndex].isKing) {
+  //       // Also check for backward position
+  //       directions.push([1, -1]);
+  //       directions.push([1, 1]);
+  //     }
+  //   } else {
+  //     directions.push([1, -1]);
+  //     directions.push([1, 1]);
+  //     if (board[rowIndex][columnIndex].isKing) {
+  //       // Also check for backward position
+  //       directions.push([-1, -1]);
+  //       directions.push([-1, 1]);
+  //     }
+  //   }
+
   if (currentPlayer == PLAYER_1) {
     directions.push([-1, -1]);
     directions.push([-1, 1]);
-    if (board[rowIndex][columnIndex].isKing) {
+    if (board[i][j].isKing) {
       // Also check for backward position
       directions.push([1, -1]);
       directions.push([1, 1]);
@@ -37,14 +57,14 @@ export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => 
   } else {
     directions.push([1, -1]);
     directions.push([1, 1]);
-    if (board[rowIndex][columnIndex].isKing) {
+    if (board[i][j].isKing) {
       // Also check for backward position
       directions.push([-1, -1]);
       directions.push([-1, 1]);
     }
   }
 
-  console.log('di');
+  console.log('directions = ', directions);
 
   let dir;
   directions.forEach((direction) => {
@@ -52,6 +72,8 @@ export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => 
       dir = direction;
     }
   });
+
+  console.log('final correct direction', dir);
 
   // dir holds the direction we moved our piece to
   // delete the enemy cell in this direction
@@ -90,6 +112,25 @@ export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => 
     for (let j = 0; j < BOARD_SIZE; j += 1) {
       board[i][j].isValidNextMove = false;
       board[i][j].isActive = false;
+    }
+  }
+
+  // Check to see if any cell has become king or not
+  // For Player 1 Cells
+  // Check inside the 0'th row
+  for (let i = 0; i < BOARD_SIZE; i += 1) {
+    if (board[0][i].owner == PLAYER_1) {
+      // Player 1 cells reached last position, make it king cell
+      board[0][i].isKing = true;
+    }
+  }
+
+  // For Player 2 / Computer Cells
+  // Check inside the BOARD_SIZE -  1'th row
+  for (let i = 0; i < BOARD_SIZE; i += 1) {
+    if (board[BOARD_SIZE - 1][i].owner == (PLAYER_2 || COMPUTER)) {
+      // Player 2 or comuters cells reached last position, make it king cell
+      board[BOARD_SIZE - 1][i].isKing = true;
     }
   }
 
