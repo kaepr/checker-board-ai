@@ -2,7 +2,7 @@
 //   isGameDraw: false,
 //   player1Won: false,
 // }
-import { BOARD_SIZE, PLAYER_1, COMPUTER } from "../constants";
+import { BOARD_SIZE, PLAYER_1, COMPUTER, PLAYER_2 } from "../constants";
 
 export const isGameWon = (boardData, currentPlayer) => {
     // Check if all cells are of one type

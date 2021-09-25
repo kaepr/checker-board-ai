@@ -1,8 +1,15 @@
 import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import { PLAYER_1, PLAYER_2, COMPUTER } from '../constants';
 import { handleClick } from '../helpers';
-import { selectBoard, setBoard } from '../features/game/gameSlice';
+import {
+  changeTurnCountByAmount,
+  changeWhoseTurn,
+  selectBoard,
+  selectWhoseTurn,
+  setBoard,
+} from '../features/game/gameSlice';
 
 const getCheckerPieceClass = (data) => {
   const classList = ['checker__piece'];
@@ -31,6 +38,8 @@ const getCheckerPieceClass = (data) => {
     classList.push('checker__piece--valid_move');
   }
 
+  classList.push('checker__piece--king');
+
   return classList.join(' ');
 };
 
@@ -42,6 +51,7 @@ const Cell = ({ data, xPosition, yPosition }) => {
 
   const dispatch = useDispatch();
   const board = useSelector(selectBoard);
+  const whoseTurn = useSelector(selectWhoseTurn);
 
   const handlePlayerClick = (e) => {
     e.stopPropagation();
@@ -50,11 +60,24 @@ const Cell = ({ data, xPosition, yPosition }) => {
 
     // if it fails, result will be falsy
     // else it will be the new game board
-    const result = handleClick(xPosition, yPosition, board, PLAYER_1);
 
-    if (!result) return;
+    const result = handleClick(xPosition, yPosition, board, whoseTurn);
 
-    dispatch(setBoard(result));
+    if (!result.isSuccessful) {
+      return;
+    }
+
+    dispatch(setBoard(result.boardData));
+
+    if (result.wasExecuted) {
+      if (whoseTurn == PLAYER_1) {
+        dispatch(changeWhoseTurn(PLAYER_2));
+      } else if (whoseTurn == PLAYER_2) {
+        dispatch(changeWhoseTurn(PLAYER_1));
+      }
+
+      dispatch(changeTurnCountByAmount(1));
+    }
 
     // dispatch(
     //   handlePlayerInput({

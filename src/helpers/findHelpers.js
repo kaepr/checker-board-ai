@@ -1,6 +1,6 @@
-import { EMPTY } from "../constants";
+import { EMPTY, PLAYER_1 } from '../constants';
 import _ from 'lodash';
-import { isValidIndex, isValidDirection } from ".";
+import { isValidIndex, isValidDirection } from './utils';
 
 export const getCaptureMoves = (rowIndex, columnIndex, board, directions, currentPlayer) => {
   const possibleCaptureMoves = [];
@@ -42,7 +42,6 @@ export const getAdjacentMoves = (rowIndex, columnIndex, board, directions) => {
   return moves;
 };
 
-
 /*
 Assuming player has chosen his own cell
 Show him all his possible next moves
@@ -50,22 +49,38 @@ Show him all his possible next moves
 Returns an array of the next possible moves for provided indexes
 */
 
-
 export const findMoves = (rowIndex, columnIndex, boardData, currentPlayer) => {
- 
   let possibleMoves = [];
   const board = _.cloneDeep(boardData);
-
-  let directions = [
-    [-1, -1],
-    [-1, 1],
-  ];
-
-  if (board[rowIndex][columnIndex].isKing) {
-    // Also check for backward position
+  let directions = [];
+  if (currentPlayer == PLAYER_1) {
+    directions.push([-1, -1]);
+    directions.push([-1, 1]);
+    if (board[rowIndex][columnIndex].isKing) {
+      // Also check for backward position
+      directions.push([1, -1]);
+      directions.push([1, 1]);
+    }
+  } else {
     directions.push([1, -1]);
     directions.push([1, 1]);
+    if (board[rowIndex][columnIndex].isKing) {
+      // Also check for backward position
+      directions.push([-1, -1]);
+      directions.push([-1, 1]);
+    }
   }
+
+  // let directions = [
+  //   [-1, -1],
+  //   [-1, 1],
+  // ];
+
+  // if (board[rowIndex][columnIndex].isKing) {
+  //   // Also check for backward position
+  //   directions.push([1, -1]);
+  //   directions.push([1, 1]);
+  // }
   //adjacent moves
   const adjMoves = getAdjacentMoves(rowIndex, columnIndex, board, directions);
 
@@ -74,7 +89,5 @@ export const findMoves = (rowIndex, columnIndex, boardData, currentPlayer) => {
 
   possibleMoves = [...adjMoves, ...capMoves];
 
-
   return possibleMoves;
 };
-

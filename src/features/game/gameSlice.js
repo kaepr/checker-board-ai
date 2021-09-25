@@ -99,8 +99,8 @@ const gameSlice = createSlice({
     setBoard(state, action) {
       state.board = action.payload;
     },
-    changeTurnCount(state, action) {
-      state.turnCount = action.payload;
+    changeTurnCountByAmount(state, action) {
+      state.turnCount += action.payload;
     },
     changeWhoseTurn(state, action) {
       state.whoseTurn = action.payload;
@@ -117,12 +117,13 @@ export const {
   changePlayerOneCells,
   changePlayerTwoCells,
   setBoard,
+  changeTurnCountByAmount,
   changeWhoseTurn,
-  changeTurnCount,
 } = gameSlice.actions;
 
 export const selectBoard = (state) => state.game.board;
 export const selectMoveList = (state) => state.game.playerOneMoves;
 export const selectLoading = (state) => state.game.loading;
+export const selectWhoseTurn = (state) => state.game.whoseTurn;
 
 export default gameSlice.reducer;
