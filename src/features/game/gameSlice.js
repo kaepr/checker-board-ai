@@ -6,6 +6,7 @@ const initialCellState = {
   isValidNextMove: false,
   isKing: false,
   isActive: false,
+  hasPossibleCapture: false,
 };
 
 const initialState = {

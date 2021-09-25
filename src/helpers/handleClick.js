@@ -2,6 +2,7 @@ import { cloneDeep, create } from 'lodash';
 import { EMPTY, BOARD_SIZE } from '../constants';
 import { findMoves, getCaptureMoves } from './findHelpers';
 import { executeMove } from './executeMove';
+import { getDirections } from './utils';
 
 const createResponse = (boardData, isSuccessful, wasExecuted = false) => {
   return {
@@ -30,19 +31,66 @@ export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => 
   }
 
   // For call of current Player, of all capturables moves possible
+  // [  [x1,y1], [x2,y2]  ]
   let allCapturablesMoves = [];
+  let startPositions = [];
   for (let i = 0; i < BOARD_SIZE; i += 1) {
     for (let j = 0; j < BOARD_SIZE; j += 1) {
-      const 
-      const curCapturablesMoves = getCaptureMoves(i, j, board, currentPlayer);
+      if (board[i][j].owner === currentPlayer) {
+        // Finds all the indexes on which it can capture
+        const directions = getDirections(i, j, board, currentPlayer);
+        const curCapturablesMoves = getCaptureMoves(i, j, board, directions, currentPlayer);
+        if (curCapturablesMoves.length > 0) {
+          startPositions.push([i, j]);
+          allCapturablesMoves = [...allCapturablesMoves, ...curCapturablesMoves];
+        }
+      }
     }
+  }
+
+  console.log('all possible capturable move list', allCapturablesMoves);
+
+  // TODO Finish Logic here
+  if (allCapturablesMoves.length > 0) {
+    // There is some capturable move avalaible
+    if (allCapturablesMoves.some((move) => move[0] === rowIndex && move[1] === columnIndex)) {
+      // User played a capturable move
+      const newBoard = executeMove(rowIndex, columnIndex, board, currentPlayer);
+      return createResponse(newBoard, true, true);
+    }
+
+    if (startPositions.some((move) => move[0] === rowIndex && move[1] === columnIndex)) {
+      // User played a move which is a valid start position for a capturable move
+      // So make it active, and show all capturable moves it has avaiable
+
+      for (let i = 0; i < BOARD_SIZE; i += 1) {
+        for (let j = 0; j < BOARD_SIZE; j += 1) {
+          board[i][j].isValidNextMove = false;
+          board[i][j].isActive = false;
+        }
+      }
+
+      // 2. Set provided cell to be is active
+      board[rowIndex][columnIndex].isActive = true;
+
+      // 3. Find all the next valid moves for this cell
+      const nextMoves = findMoves(rowIndex, columnIndex, board, currentPlayer);
+
+      nextMoves.forEach((move) => {
+        board[move[0]][move[1]].isValidNextMove = true;
+      });
+
+      return createResponse(board, true);
+    }
+
+    return createResponse(board, false, false);
+
   }
 
   // Clicked on a cell whose is-valid-next-move is true
   // Now execute that move
   if (cellData.isValidNextMove) {
     const newBoard = executeMove(rowIndex, columnIndex, board, currentPlayer);
-
     return createResponse(newBoard, true, true);
   }
 

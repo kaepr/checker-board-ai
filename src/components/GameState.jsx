@@ -9,7 +9,7 @@ const GameState = () => {
 
   return (
     <div>
-      <p>Game State</p>
+      <p>Game State : </p> 
       Whose Turn = {whoseTurn}, Turn Count = {turnCount}
     </div>
   );

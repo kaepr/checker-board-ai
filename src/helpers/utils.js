@@ -13,7 +13,7 @@ export const getInitialCellState = () => {
 /*
 Get all directions for provided cell
 */
-export const getDirections = (currentPlayer) => {
+export const getDirections = (rowIndex, columnIndex, board, currentPlayer) => {
   let directions = [];
   if (currentPlayer == PLAYER_1) {
     directions.push([-1, -1]);
@@ -32,8 +32,7 @@ export const getDirections = (currentPlayer) => {
       directions.push([-1, 1]);
     }
   }
-
-  
+  return directions;
 };
 
 /*

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { BOARD_SIZE, EMPTY, PLAYER_1, COMPUTER, PLAYER_2 } from '../constants';
-import { isValidDirection, isValidIndex, getInitialCellState } from './utils';
+import { isValidDirection, isValidIndex, getInitialCellState, getDirections } from './utils';
 
 export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => {
   // Find that one cell which has isActive flag set to true
@@ -21,50 +21,10 @@ export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => 
     }
   }
 
-  console.log('is active cell', board[i][j]);
-
   // Go from (i,j) to (rowIndex, columnIndex)
   // Delete the enemy cell in the way
 
-  let directions = [];
-
-  //   if (currentPlayer == PLAYER_1) {
-  //     directions.push([-1, -1]);
-  //     directions.push([-1, 1]);
-  //     if (board[rowIndex][columnIndex].isKing) {
-  //       // Also check for backward position
-  //       directions.push([1, -1]);
-  //       directions.push([1, 1]);
-  //     }
-  //   } else {
-  //     directions.push([1, -1]);
-  //     directions.push([1, 1]);
-  //     if (board[rowIndex][columnIndex].isKing) {
-  //       // Also check for backward position
-  //       directions.push([-1, -1]);
-  //       directions.push([-1, 1]);
-  //     }
-  //   }
-
-  if (currentPlayer == PLAYER_1) {
-    directions.push([-1, -1]);
-    directions.push([-1, 1]);
-    if (board[i][j].isKing) {
-      // Also check for backward position
-      directions.push([1, -1]);
-      directions.push([1, 1]);
-    }
-  } else {
-    directions.push([1, -1]);
-    directions.push([1, 1]);
-    if (board[i][j].isKing) {
-      // Also check for backward position
-      directions.push([-1, -1]);
-      directions.push([-1, 1]);
-    }
-  }
-
-  console.log('directions = ', directions);
+  const directions = getDirections(i, j, board, currentPlayer);
 
   let dir;
   directions.forEach((direction) => {

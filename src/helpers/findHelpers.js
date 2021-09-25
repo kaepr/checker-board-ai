@@ -1,6 +1,6 @@
 import { EMPTY, PLAYER_1 } from '../constants';
 import { cloneDeep } from 'lodash';
-import { isValidIndex, isValidDirection } from './utils';
+import { isValidIndex, isValidDirection, getDirections } from './utils';
 
 export const getCaptureMoves = (rowIndex, columnIndex, board, directions, currentPlayer) => {
   const possibleCaptureMoves = [];
@@ -44,7 +44,6 @@ export const getAdjacentMoves = (rowIndex, columnIndex, board, directions) => {
 
 /* 
   forceful capture
-
 */
 
 /*
@@ -57,35 +56,8 @@ Returns an array of the next possible moves for provided indexes
 export const findMoves = (rowIndex, columnIndex, boardData, currentPlayer) => {
   let possibleMoves = [];
   const board = cloneDeep(boardData);
-  let directions = [];
-  if (currentPlayer == PLAYER_1) {
-    directions.push([-1, -1]);
-    directions.push([-1, 1]);
-    if (board[rowIndex][columnIndex].isKing) {
-      // Also check for backward position
-      directions.push([1, -1]);
-      directions.push([1, 1]);
-    }
-  } else {
-    directions.push([1, -1]);
-    directions.push([1, 1]);
-    if (board[rowIndex][columnIndex].isKing) {
-      // Also check for backward position
-      directions.push([-1, -1]);
-      directions.push([-1, 1]);
-    }
-  }
+  const directions = getDirections(rowIndex, columnIndex, boardData, currentPlayer);
 
-  // let directions = [
-  //   [-1, -1],
-  //   [-1, 1],
-  // ];
-
-  // if (board[rowIndex][columnIndex].isKing) {
-  //   // Also check for backward position
-  //   directions.push([1, -1]);
-  //   directions.push([1, 1]);
-  // }
   //capture moves
   const capMoves = getCaptureMoves(rowIndex, columnIndex, board, directions, currentPlayer);
   if (capMoves.length > 0) {
