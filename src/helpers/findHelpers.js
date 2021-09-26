@@ -42,17 +42,9 @@ export const getAdjacentMoves = (rowIndex, columnIndex, board, directions) => {
   return moves;
 };
 
-/* 
-  forceful capture
-*/
-
 /*
-Assuming player has chosen his own cell
-Show him all his possible next moves
-
 Returns an array of the next possible moves for provided indexes
 */
-
 export const findMoves = (rowIndex, columnIndex, boardData, currentPlayer) => {
   let possibleMoves = [];
   const board = cloneDeep(boardData);

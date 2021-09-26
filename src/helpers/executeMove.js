@@ -6,8 +6,7 @@ export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => 
   // Find that one cell which has isActive flag set to true
   const board = cloneDeep(boardData);
 
-  let i;
-  let j;
+  let i, j;
   let found = false;
   for (i = 0; i < BOARD_SIZE; i++) {
     for (j = 0; j < BOARD_SIZE; j++) {
@@ -56,9 +55,6 @@ export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => 
     isValidNextMove: false,
     isActive: false,
   };
-
-  // board[i][j].owner = EMPTY;
-  // board[i][j].isKing = false;
 
   if (enemyX == rowIndex && columnIndex == enemyY) {
     // this implies adjacent moved

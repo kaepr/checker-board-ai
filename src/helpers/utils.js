@@ -6,6 +6,7 @@ export const getInitialCellState = () => {
     isActive: false,
     isValidNextMove: false,
     isKing: false,
+    hasPossibleCapture: false,
   };
 };
 

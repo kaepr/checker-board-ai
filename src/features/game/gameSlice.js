@@ -63,6 +63,7 @@ const gameSlice = createSlice({
         state.playerTwoCells = payload.playerTwoCells;
         state.opponentCells = payload.opponentCells;
         state.turnCount = payload.turnCount;
+        state.whoseTurn = payload.whoseTurn;
       },
       prepare() {
         return {
