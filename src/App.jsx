@@ -13,8 +13,8 @@ import {
   setLoading,
 } from './features/game/gameSlice';
 import GameState from './components/GameState';
-import { highlightCapturingMoves } from './helpers';
-import { COMPUTER } from './constants';
+import { getGameState, highlightCapturingMoves } from './helpers';
+import { COMPUTER, DEPTH } from './constants';
 import { RandomPlayer, MiniMaxPlayer, ABPruningPlayer } from './gameAgents';
 
 const getAIFromName = (name) => {
@@ -22,7 +22,7 @@ const getAIFromName = (name) => {
     case RandomPlayer.name:
       return new RandomPlayer();
     case MiniMaxPlayer.name:
-      return new MiniMaxPlayer();
+      return new MiniMaxPlayer(DEPTH);
     case ABPruningPlayer.name:
       return new ABPruningPlayer();
     default:

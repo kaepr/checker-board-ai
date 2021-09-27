@@ -28,7 +28,7 @@ class RandomPlayer {
 
   findNextMove() {
     // 1. Find any next possible move
-    // 2. 
+    // 2. Execute the move
   }
 }
 

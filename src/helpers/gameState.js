@@ -15,7 +15,7 @@ draw conditions
     2. No pieces have been removed from the board during the previous 50 moves.
 */
 
-export const getGameState = (boardData, turnCount, lastKingMadeAt) => {
+export const getGameState = (boardData, turnCount, lastKingMadeAt, lastCaptureAt) => {
   // Check if all cells are of one type
   const board = cloneDeep(boardData);
   let playerOneCount = 0;
@@ -36,7 +36,7 @@ export const getGameState = (boardData, turnCount, lastKingMadeAt) => {
       }
     }
   }
-  
+
   //TODO return object
   if (player1Pieces == 0) {
     return PLAYER_2;

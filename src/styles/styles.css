@@ -129,7 +129,7 @@
 }
 
 .checker__piece.checker__piece--another_jump {
-  border: 8px solid rgb(207, 12, 214);
+  border: 12px solid rgb(207, 12, 214);
 }
 
 .checker__piece.checker__piece--king {

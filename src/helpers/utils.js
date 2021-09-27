@@ -12,6 +12,20 @@ export const getInitialCellState = () => {
   };
 };
 
+export const getDiscPositions = (player, board) => {
+  const positions = [];
+  for (let i = 0; i < board.length; ++i) {
+    const row = board[i];
+    for (let j = 0; j < row.length; ++j) {
+      const elem = row[j];
+      if (elem.owner === player) {
+        positions.push([i, j]);
+      }
+    }
+  }
+  return positions;
+};
+
 /*
 Get all directions for provided cell
 */

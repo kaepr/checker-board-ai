@@ -52,7 +52,14 @@ const getCheckerPieceClass = (data) => {
 const Cell = ({ data, xPosition, yPosition }) => {
   const checkerClassNames = useMemo(
     () => getCheckerPieceClass(data),
-    [data.owner, data.isKing, data.isActive, data.isValidNextMove, data.hasPossibleCapture]
+    [
+      data.owner,
+      data.isKing,
+      data.isActive,
+      data.isValidNextMove,
+      data.hasPossibleCapture,
+      data.hasAnotherJump,
+    ]
   );
 
   const dispatch = useDispatch();
@@ -64,6 +71,7 @@ const Cell = ({ data, xPosition, yPosition }) => {
 
     const result = handleClick(xPosition, yPosition, board, whoseTurn);
 
+    console.log('result = ', result);
     if (!result.isSuccessful) {
       return;
     }

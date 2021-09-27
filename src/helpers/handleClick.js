@@ -1,14 +1,16 @@
 import { cloneDeep } from 'lodash';
-import { getCapturablePositions } from '.';
-import { EMPTY } from '../constants';
+import { getCapturablePositions, getCaptureMoves, getDirections } from '.';
+import { BOARD_SIZE, EMPTY } from '../constants';
 import { executeMove } from './executeMove';
 import { highlightMoves } from './highlightMoves';
 
-const createResponse = (boardData, isSuccessful, wasExecuted = false) => {
+const createResponse = (boardData, isSuccessful, wasExecuted = false, wasKingMade = false) => {
   return {
     boardData,
     isSuccessful,
     wasExecuted,
+    wasKingMade,
+    wasCaptureMade,
   };
 };
 
@@ -41,13 +43,82 @@ export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => 
   if (allCapturablesMoves.length > 0) {
     // There is some capturable move available
 
-    // Check if any of those has 
+    // Check if any of the cells has another jump set to true
+    // If yes, only force that to be played, as this is the multiple jumping cell
+    let i = 0;
+    let j = 0;
+    let multipleJumpCapturingMoves = [];
+    let exists = false;
+    for (i = 0; i < BOARD_SIZE; i += 1) {
+      for (j = 0; j < BOARD_SIZE; j += 1) {
+        if (board[i][j].owner === currentPlayer) {
+          if (board[i][j].hasAnotherJump) {
+            exists = true;
+            const directions = getDirections(i, j, board, currentPlayer);
+            multipleJumpCapturingMoves = getCaptureMoves(i, j, board, directions, currentPlayer);
+            break;
+          }
+        }
+        if (exists) {
+          break;
+        }
+      }
+      if (exists) {
+        break;
+      }
+    }
+
+    // TODO Is this fixed ?
+    if (exists) {
+      console.log('has another jump', multipleJumpCapturingMoves);
+      console.log('i, j, row, col', i, j, rowIndex, columnIndex);
+
+      if (
+        multipleJumpCapturingMoves.some((move) => move[0] === rowIndex && move[1] === columnIndex)
+      ) {
+        // Played at some point which the has another jump cell can make
+
+        const data = executeMove(rowIndex, columnIndex, board, currentPlayer);
+
+        // As the cell has another capture available,
+        // We make it so that player has to finish playing it
+        if (data.hasAnotherJump) {
+          return createResponse(data.boardData, true, false, data.kingMade);
+        }
+
+        // No multiple jump possible
+        // So turn executed successfully
+        return createResponse(data.boardData, true, true, data.kingMade);
+      } else if (i === rowIndex && j === columnIndex) {
+        // Played on the cell which was has another jump set to true
+        // Highlights all its possibe captures
+
+        const highlighedBoard = highlightMoves(board, rowIndex, columnIndex, currentPlayer);
+        return createResponse(highlighedBoard, true, false, false);
+      } else {
+        // User had to forcefully play at either the has another jump cell itself
+        // Or the position it could finally be in
+        // He played neither of those
+        // So ignore his click
+
+        return createResponse(board, false, false, false);
+      }
+    }
 
     if (allCapturablesMoves.some((move) => move[0] === rowIndex && move[1] === columnIndex)) {
       // User played a capturable move
 
-      const newBoard = executeMove(rowIndex, columnIndex, board, currentPlayer);
-      return createResponse(newBoard, true, true);
+      const data = executeMove(rowIndex, columnIndex, board, currentPlayer);
+
+      // As the cell has another capture available,
+      // We make it so that player has to finish playing it
+      if (data.hasAnotherJump) {
+        return createResponse(data.boardData, true, false, data.kingMade);
+      }
+
+      // No multiple jump possible
+      // So turn executed successfully
+      return createResponse(data.boardData, true, true, data.kingMade);
     }
 
     if (startPositions.some((move) => move[0] === rowIndex && move[1] === columnIndex)) {
@@ -61,15 +132,15 @@ export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => 
     // User did not play on a cell who can be captured, or on a cell which was a start position
     // for some cell which could be captured
     // So basically ignore his click
-    return createResponse(board, false, false);
+    return createResponse(board, false, false, false);
   }
 
   // Clicked on a cell whose is-valid-next-move is true
   // This functions only runs when there is no capturing move available
   // Now execute that move
   if (cellData.isValidNextMove) {
-    const newBoard = executeMove(rowIndex, columnIndex, board, currentPlayer);
-    return createResponse(newBoard, true, true);
+    const data = executeMove(rowIndex, columnIndex, board, currentPlayer);
+    return createResponse(data.boardData, true, true, data.kingMade);
   }
 
   // If nothing above, user just clicked on his own cell
