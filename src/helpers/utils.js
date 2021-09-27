@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash';
 import { getCaptureMoves } from '.';
-import { BOARD_SIZE, EMPTY, PLAYER_1 } from '../constants';
+import { BOARD_SIZE, EMPTY, PLAYER_1, PLAYER_2, COMPUTER } from '../constants';
 
 export const getInitialCellState = () => {
   return {
@@ -121,4 +121,42 @@ export const getCapturablePositions = (board, currentPlayer) => {
   }
 
   return { allCapturablesMoves, startPositions };
+};
+
+export const getCheckerPieceClass = (data) => {
+  const classList = ['checker__piece'];
+
+  if (data.owner === PLAYER_1) {
+    classList.push('checker__piece--first');
+  }
+
+  if (data.owner === PLAYER_2) {
+    classList.push('checker__piece--second');
+  }
+
+  if (data.owner === COMPUTER) {
+    classList.push('checker__piece--second');
+  }
+
+  if (data.isKing && data.owner != EMPTY) {
+    classList.push('checker__piece--king');
+  }
+
+  if (data.isActive) {
+    classList.push('checker__piece--active');
+  }
+
+  if (data.isValidNextMove) {
+    classList.push('checker__piece--valid_move');
+  }
+
+  if (data.hasPossibleCapture) {
+    classList.push('checker__piece--possible_capture');
+  }
+
+  if (data.hasAnotherJump) {
+    classList.push('checker__piece--another_jump');
+  }
+
+  return classList.join(' ');
 };

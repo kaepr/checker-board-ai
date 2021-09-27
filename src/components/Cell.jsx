@@ -3,75 +3,32 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { PLAYER_1, PLAYER_2, COMPUTER, EMPTY } from '../constants';
 import { handleClick } from '../helpers';
+
 import {
   changeTurnCountByAmount,
   changeWhoseTurn,
   selectBoard,
+  selectTurnCount,
   selectWhoseTurn,
   setBoard,
+  setCaptureMadeAt,
+  setKingMadeAt,
 } from '../features/game/gameSlice';
-
-const getCheckerPieceClass = (data) => {
-  const classList = ['checker__piece'];
-
-  if (data.owner === PLAYER_1) {
-    classList.push('checker__piece--first');
-  }
-
-  if (data.owner === PLAYER_2) {
-    classList.push('checker__piece--second');
-  }
-
-  if (data.owner === COMPUTER) {
-    classList.push('checker__piece--second');
-  }
-
-  if (data.isKing && data.owner != EMPTY) {
-    classList.push('checker__piece--king');
-  }
-
-  if (data.isActive) {
-    classList.push('checker__piece--active');
-  }
-
-  if (data.isValidNextMove) {
-    classList.push('checker__piece--valid_move');
-  }
-
-  if (data.hasPossibleCapture) {
-    classList.push('checker__piece--possible_capture');
-  }
-
-  if (data.hasAnotherJump) {
-    classList.push('checker__piece--another_jump');
-  }
-
-  return classList.join(' ');
-};
+import { getCheckerPieceClass } from '../helpers';
 
 const Cell = ({ data, xPosition, yPosition }) => {
-  const checkerClassNames = useMemo(
-    () => getCheckerPieceClass(data),
-    [
-      data.owner,
-      data.isKing,
-      data.isActive,
-      data.isValidNextMove,
-      data.hasPossibleCapture,
-      data.hasAnotherJump,
-    ]
-  );
+  const checkerClassNames = useMemo(() => getCheckerPieceClass(data), [data]);
 
   const dispatch = useDispatch();
   const board = useSelector(selectBoard);
   const whoseTurn = useSelector(selectWhoseTurn);
+  const turnCount = useSelector(selectTurnCount);
 
   const handlePlayerClick = (e) => {
     e.stopPropagation();
 
     const result = handleClick(xPosition, yPosition, board, whoseTurn);
 
-    console.log('result = ', result);
     if (!result.isSuccessful) {
       return;
     }
@@ -79,6 +36,16 @@ const Cell = ({ data, xPosition, yPosition }) => {
     dispatch(setBoard(result.boardData));
 
     if (result.wasExecuted) {
+      console.log('executed successfully = ', result);
+
+      if (result.wasKingMade) {
+        dispatch(setKingMadeAt(turnCount));
+      }
+
+      if (result.wasCaptureMade) {
+        dispatch(setCaptureMadeAt(turnCount));
+      }
+
       if (whoseTurn == PLAYER_1) {
         dispatch(changeWhoseTurn(PLAYER_2));
       } else if (whoseTurn == PLAYER_2) {

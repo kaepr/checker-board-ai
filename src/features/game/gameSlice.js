@@ -17,6 +17,8 @@ const initialState = {
   playerOneCells: CELLS_AMOUNT,
   playerTwoCells: CELLS_AMOUNT,
   opponentCells: CELLS_AMOUNT,
+  kingMadeAt: 0,
+  captureMadeAt: 0,
   turnCount: 0,
   whoseTurn: PLAYER_1,
 };
@@ -65,6 +67,8 @@ const gameSlice = createSlice({
         state.opponentCells = payload.opponentCells;
         state.turnCount = payload.turnCount;
         state.whoseTurn = payload.whoseTurn;
+        state.kingMadeAt = payload.kingMadeAt;
+        state.captureMadeAt = payload.captureMadeAt;
       },
       prepare() {
         return {
@@ -76,6 +80,8 @@ const gameSlice = createSlice({
             opponentCells: CELLS_AMOUNT,
             turnCount: 0,
             whoseTurn: PLAYER_1,
+            kingMadeAt: 0,
+            captureMadeAt: 0,
           },
         };
       },
@@ -104,6 +110,12 @@ const gameSlice = createSlice({
     changeWhoseTurn(state, action) {
       state.whoseTurn = action.payload;
     },
+    setKingMadeAt(state, action) {
+      state.kingMadeAt = action.payload;
+    },
+    setCaptureMadeAt(state, action) {
+      state.captureMadeAt = action.payload;
+    },
   },
 });
 
@@ -117,6 +129,8 @@ export const {
   setBoard,
   changeTurnCountByAmount,
   changeWhoseTurn,
+  setKingMadeAt,
+  setCaptureMadeAt,
 } = gameSlice.actions;
 
 export const selectBoard = (state) => state.game.board;
@@ -124,5 +138,7 @@ export const selectMoveList = (state) => state.game.playerOneMoves;
 export const selectLoading = (state) => state.game.loading;
 export const selectWhoseTurn = (state) => state.game.whoseTurn;
 export const selectTurnCount = (state) => state.game.turnCount;
+export const selectKingMadeAt = (state) => state.game.kingMadeAt;
+export const selectCaptureMadeAt = (state) => state.game.captureMadeAt;
 
 export default gameSlice.reducer;
