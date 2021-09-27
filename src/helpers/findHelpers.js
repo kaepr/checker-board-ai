@@ -50,17 +50,14 @@ export const findMoves = (rowIndex, columnIndex, boardData, currentPlayer) => {
   const board = cloneDeep(boardData);
   const directions = getDirections(rowIndex, columnIndex, boardData, currentPlayer);
 
-  //capture moves
   const capMoves = getCaptureMoves(rowIndex, columnIndex, board, directions, currentPlayer);
   if (capMoves.length > 0) {
     possibleMoves = capMoves;
     return possibleMoves;
   }
 
-  //adjacent moves
   const adjMoves = getAdjacentMoves(rowIndex, columnIndex, board, directions);
 
   possibleMoves = [...adjMoves, ...capMoves];
-
   return possibleMoves;
 };

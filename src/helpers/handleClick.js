@@ -13,22 +13,7 @@ const createResponse = (boardData, isSuccessful, wasExecuted = false) => {
   };
 };
 
-export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => {
-  const board = cloneDeep(boardData);
-  const cellData = board[rowIndex][columnIndex];
-
-  // This handles user click on an empty cell, and specifically on that empty cell who is confirmed to be not a valid next move
-  if (cellData.owner === EMPTY && !cellData.isValidNextMove) {
-    return createResponse(board, false);
-  }
-
-  // Or they clicked enemy cell, (and the cell was not empty)
-  if (cellData.owner != currentPlayer && cellData.owner != EMPTY) {
-    return createResponse(board, false);
-  }
-
-  // For all of current Player moves, get all capturables moves possible
-  // [  [x1,y1], [x2,y2]  ]
+const getCapturablePositions = (board, currentPlayer) => {
   let allCapturablesMoves = [];
   let startPositions = [];
   for (let i = 0; i < BOARD_SIZE; i += 1) {
@@ -45,13 +30,34 @@ export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => 
     }
   }
 
+  return { allCapturablesMoves, startPositions };
+};
+
+export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => {
+  const board = cloneDeep(boardData);
+  const cellData = board[rowIndex][columnIndex];
+
+  // This handles user click on an empty cell, and specifically on that empty cell who is confirmed to be not a valid next move
+  if (cellData.owner === EMPTY && !cellData.isValidNextMove) {
+    return createResponse(board, false);
+  }
+
+  // Or they clicked enemy cell, (and the cell was not empty)
+  if (cellData.owner != currentPlayer && cellData.owner != EMPTY) {
+    return createResponse(board, false);
+  }
+
+  // For all of current Player moves, get all capturables moves possible
+  const { allCapturablesMoves, startPositions } = getCapturablePositions(board, currentPlayer);
+
+  // Mark's all the capturing moves available
   startPositions.forEach((move) => {
     board[move[0]][move[1]].hasPossibleCapture = true;
   });
 
-  console.log('all possible capturable move list', allCapturablesMoves);
+  // If capturing positions are avalaibale, force the user to only play on those positions
+  // If a capturing move has a another capturing move available, user must play that to completion
 
-  // TODO Finish Logic here
   if (allCapturablesMoves.length > 0) {
     // There is some capturable move avalaible
     if (allCapturablesMoves.some((move) => move[0] === rowIndex && move[1] === columnIndex)) {
@@ -64,38 +70,25 @@ export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => 
       // User played a move which is a valid start position for a capturable move
       // So make it active, and show all capturable moves it has available
 
-      for (let i = 0; i < BOARD_SIZE; i += 1) {
-        for (let j = 0; j < BOARD_SIZE; j += 1) {
-          board[i][j].isValidNextMove = false;
-          board[i][j].isActive = false;
-          board[i][j].hasPossibleCapture = false;
-        }
-      }
-
-      // 2. Set provided cell to be is active
-      board[rowIndex][columnIndex].isActive = true;
-
-      // 3. Find all the next valid moves for this cell
-      const nextMoves = findMoves(rowIndex, columnIndex, board, currentPlayer);
-
-      nextMoves.forEach((move) => {
-        board[move[0]][move[1]].isValidNextMove = true;
-      });
-
-      return createResponse(board, true);
+      const highlighedBoard = highlightMoves(board, rowIndex, columnIndex, currentPlayer);
+      return createResponse(highlighedBoard, true, false);
     }
 
+    // User did not play on a cell who can be captured, or on a cell which was a start position
+    // for some cell which could be captured
+    // So basically ignore his click
     return createResponse(board, false, false);
   }
 
   // Clicked on a cell whose is-valid-next-move is true
+  // This functions only runs when there is no capturing move available
   // Now execute that move
   if (cellData.isValidNextMove) {
     const newBoard = executeMove(rowIndex, columnIndex, board, currentPlayer);
     return createResponse(newBoard, true, true);
   }
 
-  // Now, user clicked on its own cell, this makes the cell active
+  // If nothing above, user just clicked on his own cell
   // This will show all the next possible valid positions from this cell
   // modify board adding cells which can be the next possible move
   const highlighedBoard = highlightMoves(board, rowIndex, columnIndex, currentPlayer);

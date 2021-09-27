@@ -58,11 +58,6 @@ const Cell = ({ data, xPosition, yPosition }) => {
   const handlePlayerClick = (e) => {
     e.stopPropagation();
 
-    console.log('data, positions', data, xPosition, yPosition);
-
-    // if it fails, result will be falsy
-    // else it will be the new game board
-
     const result = handleClick(xPosition, yPosition, board, whoseTurn);
 
     if (!result.isSuccessful) {
@@ -80,12 +75,6 @@ const Cell = ({ data, xPosition, yPosition }) => {
 
       dispatch(changeTurnCountByAmount(1));
     }
-
-    // dispatch(
-    //   handlePlayerInput({
-    //     moveCoordinates: [xPosition, yPosition],
-    //   })
-    // );
   };
 
   return (

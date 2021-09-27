@@ -38,11 +38,7 @@ export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => 
   // Go from (i,j) to (rowIndex, columnIndex)
   // Delete the enemy cell in the way ( if existing )
 
-  // const directions = getDirections(i, j, board, currentPlayer);
-
   const dir = findCorrectDirection(i, j, rowIndex, columnIndex, board, currentPlayer);
-
-  // (i,j) = (i+1,j+1) = (i+2,j+2) = (rowIndex, columnIndex)
 
   const nextX = i + dir[0];
   const nextY = j + dir[1];
@@ -51,6 +47,7 @@ export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => 
   // Original Cell is active should be false
 
   // TODO Maybe change this later when implementing forceful captures
+  // Change position of cell to new index
   board[rowIndex][columnIndex] = {
     owner: board[i][j].owner,
     isKing: board[i][j].isKing,
@@ -61,7 +58,7 @@ export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => 
   if (nextX == rowIndex && columnIndex == nextY) {
     // this implies adjacent moved
   } else {
-    // Capture is successful, make this position empty
+    // Capture is successful, make middle position empty
     board[nextX][nextY] = getInitialCellState();
   }
 
