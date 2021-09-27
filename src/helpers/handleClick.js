@@ -4,6 +4,7 @@ import { executeMove } from './executeMove';
 import { findMoves, getCaptureMoves } from './findHelpers';
 import { highlightMoves } from './highlightMoves';
 import { getDirections } from './utils';
+import { getCapturablePositions } from '.';
 
 const createResponse = (boardData, isSuccessful, wasExecuted = false) => {
   return {
@@ -11,33 +12,6 @@ const createResponse = (boardData, isSuccessful, wasExecuted = false) => {
     isSuccessful,
     wasExecuted,
   };
-};
-
-export const getCapturablePositions = (board, currentPlayer) => {
-  console.log('current board ', board, currentPlayer);
-
-  let allCapturablesMoves = [];
-  let startPositions = [];
-
-  if (board.length === 0) {
-    return { allCapturablesMoves, startPositions };
-  }
-
-  for (let i = 0; i < BOARD_SIZE; i += 1) {
-    for (let j = 0; j < BOARD_SIZE; j += 1) {
-      if (board[i][j].owner === currentPlayer) {
-        // Finds all the indexes on which it can capture
-        const directions = getDirections(i, j, board, currentPlayer);
-        const curCapturablesMoves = getCaptureMoves(i, j, board, directions, currentPlayer);
-        if (curCapturablesMoves.length > 0) {
-          startPositions.push([i, j]);
-          allCapturablesMoves = [...allCapturablesMoves, ...curCapturablesMoves];
-        }
-      }
-    }
-  }
-
-  return { allCapturablesMoves, startPositions };
 };
 
 export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => {

@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash';
-import { EMPTY, BOARD_SIZE, PLAYER_1 } from '../constants';
+import { getCaptureMoves } from '.';
+import { BOARD_SIZE, EMPTY, PLAYER_1 } from '../constants';
 
 export const getInitialCellState = () => {
   return {
@@ -78,4 +79,32 @@ export const getCleanBoard = (boardData) => {
     }
   }
   return board;
+};
+
+/*
+Returns all the capturing positions that a board has wrt current player
+*/
+export const getCapturablePositions = (board, currentPlayer) => {
+  let allCapturablesMoves = [];
+  let startPositions = [];
+
+  if (board.length === 0) {
+    return { allCapturablesMoves, startPositions };
+  }
+
+  for (let i = 0; i < BOARD_SIZE; i += 1) {
+    for (let j = 0; j < BOARD_SIZE; j += 1) {
+      if (board[i][j].owner === currentPlayer) {
+        // Finds all the indexes on which it can capture
+        const directions = getDirections(i, j, board, currentPlayer);
+        const curCapturablesMoves = getCaptureMoves(i, j, board, directions, currentPlayer);
+        if (curCapturablesMoves.length > 0) {
+          startPositions.push([i, j]);
+          allCapturablesMoves = [...allCapturablesMoves, ...curCapturablesMoves];
+        }
+      }
+    }
+  }
+
+  return { allCapturablesMoves, startPositions };
 };

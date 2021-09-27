@@ -13,8 +13,26 @@ import {
 } from './features/game/gameSlice';
 import GameState from './components/GameState';
 import { highlightCapturingMoves } from './helpers';
+import { COMPUTER } from './constants';
+
+class RandomPlayer {};
+class MiniMaxPlayer {};
+class ABPruningPlayer {};
+
+const getAIFromName = (name) => {
+  switch (name) {
+    case 'random':
+      return new RandomPlayer();
+  
+    default:
+      break;
+  }
+}
 
 function App() {
+  const [gameStarted, setGameStarted] = useState(false);
+  const ai = useRef(null);
+  
   const dispatch = useDispatch();
   const board = useSelector(selectBoard);
   const moveList = useSelector(selectMoveList);
@@ -24,37 +42,59 @@ function App() {
   const [highlightedBoard, setHighlightedBoard] = useState(board);
 
   const initialize = () => {
-    // dispatch(setLoading(true));
     dispatch(initializeGame());
+    if (gameStarted) {
+      setGameStarted(false);
+    } else {
+      setGameStarted(true);
+    }
+    ai 
+    // dispatch(setLoading(true));
     // dispatch(changeWhoseTurn(1));
     // dispatch(setLoading(false));
   };
 
-  useEffect(() => {
-    initialize();
-    // dispatch(setLoading(true));
-    // const boardWithCapureHighligted = highlightCapturingMoves(board, currentPlayer);
-    // setHighlightedBoard(boardWithCapureHighligted);
-  }, []);
+  // useEffect(() => {
+  //   initialize();
+  // }, []);
 
   useEffect(() => {
-    // initialize();
-    // dispatch(setLoading(true));
     if (board) {
       const boardWithCapureHighligted = highlightCapturingMoves(board, currentPlayer);
       setHighlightedBoard(boardWithCapureHighligted);
-      console.log('new highligted board', boardWithCapureHighligted);
     }
   }, [board]);
+
+  useEffect(() => {
+    if (currentPlayer == COMPUTER) {
+      // call method
+      // use handle click
+    }
+  }, [currentPlayer]);
 
   return (
     <div className="container">
       {loading && <div>App is loading right now</div>}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <h1>Checkers</h1>
-        <button className="btn-primary mt-4" onClick={initialize}>
-          Reset
-        </button>
+        <div>
+          <select
+            style={{
+              padding: '0.3rem',
+              marginRight: '1rem',
+              fontSize: '1rem',
+              borderRadius: '0.25rem',
+            }}
+            disabled={gameStarted}
+          >
+            <option value="random">Random</option>
+            <option value="minimax">MiniMax</option>
+            <option value="abpruning">αβ Pruning</option>
+          </select>
+          <button className="btn-primary mt-4" onClick={initialize}>
+            {gameStarted ? 'Reset' : 'Start'}
+          </button>
+        </div>
       </div>
       <GameState />
       <div className="board-and-moves-container">
