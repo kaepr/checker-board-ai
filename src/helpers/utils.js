@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash';
 import { EMPTY, BOARD_SIZE, PLAYER_1 } from '../constants';
 
 export const getInitialCellState = () => {
@@ -60,4 +61,21 @@ export const isValidIndex = (row, col) => {
     return true;
   }
   return false;
+};
+
+/*
+Resets isActive, isValidNextMove, hasPossible capture flags to reset the board display
+
+Used to 'clean' the board of previous conditions
+*/
+export const getCleanBoard = (boardData) => {
+  const board = cloneDeep(boardData);
+  for (let i = 0; i < BOARD_SIZE; i += 1) {
+    for (let j = 0; j < BOARD_SIZE; j += 1) {
+      board[i][j].isValidNextMove = false;
+      board[i][j].isActive = false;
+      board[i][j].hasPossibleCapture = false;
+    }
+  }
+  return board;
 };

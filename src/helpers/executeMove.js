@@ -1,6 +1,23 @@
 import { cloneDeep } from 'lodash';
-import { BOARD_SIZE, EMPTY, PLAYER_1, COMPUTER, PLAYER_2 } from '../constants';
-import { isValidDirection, isValidIndex, getInitialCellState, getDirections } from './utils';
+import { BOARD_SIZE, COMPUTER, PLAYER_1, PLAYER_2 } from '../constants';
+import {
+  getCleanBoard, getDirections, getInitialCellState, isValidDirection
+} from './utils';
+
+const findCorrectDirection = (initX, initY, rowIndex, columnIndex, boardData, currentPlayer) => {
+  const directions = getDirections(initX, initY, boardData, currentPlayer);
+
+  // Find the correct direction of isActive Cell towards current cell
+
+  let dir = [];
+  directions.forEach((direction) => {
+    if (isValidDirection(initX, initY, rowIndex, columnIndex, direction)) {
+      dir = direction;
+    }
+  });
+
+  return dir;
+};
 
 export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => {
   // Find that one cell which has isActive flag set to true
@@ -21,32 +38,19 @@ export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => 
   }
 
   // Go from (i,j) to (rowIndex, columnIndex)
-  // Delete the enemy cell in the way
+  // Delete the enemy cell in the way ( if existing )
 
-  const directions = getDirections(i, j, board, currentPlayer);
+  // const directions = getDirections(i, j, board, currentPlayer);
 
-  let dir;
-  directions.forEach((direction) => {
-    if (isValidDirection(i, j, rowIndex, columnIndex, direction)) {
-      dir = direction;
-    }
-  });
-
-  console.log('final correct direction', dir);
-
-  // dir holds the direction we moved our piece to
-  // delete the enemy cell in this direction
+  const dir = findCorrectDirection(i, j, rowIndex, columnIndex, board, currentPlayer);
 
   // (i,j) = (i+1,j+1) = (i+2,j+2) = (rowIndex, columnIndex)
 
-  const enemyX = i + dir[0];
-  const enemyY = j + dir[1];
+  const nextX = i + dir[0];
+  const nextY = j + dir[1];
 
   // Original cell should now become empty
   // Original Cell is active should be false
-
-  // board[rowIndex][columnIndex].owner = board[i][j].owner;
-  // board[rowIndex][columnIndex].isKing = board[i][j].isKing;
 
   // TODO Maybe change this later when implementing forceful captures
   board[rowIndex][columnIndex] = {
@@ -56,38 +60,35 @@ export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => 
     isActive: false,
   };
 
-  if (enemyX == rowIndex && columnIndex == enemyY) {
+  if (nextX == rowIndex && columnIndex == nextY) {
     // this implies adjacent moved
   } else {
-    board[enemyX][enemyY] = getInitialCellState();
+    // Capture is successful, make this position empty
+    board[nextX][nextY] = getInitialCellState();
   }
 
+  // Reset the cell from which execution started
   board[i][j] = getInitialCellState();
 
-  for (let i = 0; i < BOARD_SIZE; i += 1) {
-    for (let j = 0; j < BOARD_SIZE; j += 1) {
-      board[i][j].isValidNextMove = false;
-      board[i][j].isActive = false;
-      board[i][j].hasPossibleCapture = false;
-    }
-  }
+  // Resets any remaining isValids, possible captures etc
+  const cleanedBoard = getCleanBoard(board);
 
   // Check to see if any cell has become king or not
   // For Player 1 Cells
   // Check inside the 0'th row
   for (let i = 0; i < BOARD_SIZE; i += 1) {
-    if (board[0][i].owner == PLAYER_1) {
+    if (cleanedBoard[0][i].owner == PLAYER_1) {
       // Player 1 cells reached last position, make it king cell
-      board[0][i].isKing = true;
+      cleanedBoard[0][i].isKing = true;
     }
   }
 
   // For Player 2 / Computer Cells
   // Check inside the BOARD_SIZE -  1'th row
   for (let i = 0; i < BOARD_SIZE; i += 1) {
-    if (board[BOARD_SIZE - 1][i].owner == (PLAYER_2 || COMPUTER)) {
+    if (cleanedBoard[BOARD_SIZE - 1][i].owner == (PLAYER_2 || COMPUTER)) {
       // Player 2 or comuters cells reached last position, make it king cell
-      board[BOARD_SIZE - 1][i].isKing = true;
+      cleanedBoard[BOARD_SIZE - 1][i].isKing = true;
     }
   }
 
