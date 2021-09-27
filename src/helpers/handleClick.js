@@ -4,7 +4,13 @@ import { BOARD_SIZE, EMPTY } from '../constants';
 import { executeMove } from './executeMove';
 import { highlightMoves } from './highlightMoves';
 
-const createResponse = (boardData, isSuccessful, wasExecuted = false, wasKingMade = false) => {
+const createResponse = (
+  boardData,
+  isSuccessful = false,
+  wasExecuted = false,
+  wasKingMade = false,
+  wasCaptureMade = false
+) => {
   return {
     boardData,
     isSuccessful,
@@ -47,7 +53,7 @@ export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => 
     // If yes, only force that to be played, as this is the multiple jumping cell
     let i = 0;
     let j = 0;
-    let multipleJumpCapturingMoves = [];
+    let multiJumpCaptures = [];
     let exists = false;
     for (i = 0; i < BOARD_SIZE; i += 1) {
       for (j = 0; j < BOARD_SIZE; j += 1) {
@@ -55,7 +61,7 @@ export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => 
           if (board[i][j].hasAnotherJump) {
             exists = true;
             const directions = getDirections(i, j, board, currentPlayer);
-            multipleJumpCapturingMoves = getCaptureMoves(i, j, board, directions, currentPlayer);
+            multiJumpCaptures = getCaptureMoves(i, j, board, directions, currentPlayer);
             break;
           }
         }
@@ -68,14 +74,12 @@ export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => 
       }
     }
 
-    // TODO Is this fixed ?
+    // TODO Hmm might bug out later
     if (exists) {
-      console.log('has another jump', multipleJumpCapturingMoves);
+      console.log('has another jump', multiJumpCaptures);
       console.log('i, j, row, col', i, j, rowIndex, columnIndex);
 
-      if (
-        multipleJumpCapturingMoves.some((move) => move[0] === rowIndex && move[1] === columnIndex)
-      ) {
+      if (multiJumpCaptures.some((move) => move[0] === rowIndex && move[1] === columnIndex)) {
         // Played at some point which the has another jump cell can make
 
         const data = executeMove(rowIndex, columnIndex, board, currentPlayer);
@@ -88,7 +92,7 @@ export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => 
 
         // No multiple jump possible
         // So turn executed successfully
-        return createResponse(data.boardData, true, true, data.kingMade);
+        return createResponse(data.boardData, true, true, data.kingMade, true);
       } else if (i === rowIndex && j === columnIndex) {
         // Played on the cell which was has another jump set to true
         // Highlights all its possibe captures
@@ -118,7 +122,7 @@ export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => 
 
       // No multiple jump possible
       // So turn executed successfully
-      return createResponse(data.boardData, true, true, data.kingMade);
+      return createResponse(data.boardData, true, true, data.kingMade, true);
     }
 
     if (startPositions.some((move) => move[0] === rowIndex && move[1] === columnIndex)) {
