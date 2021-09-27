@@ -1,10 +1,8 @@
 import { cloneDeep } from 'lodash';
-import { BOARD_SIZE, EMPTY } from '../constants';
-import { executeMove } from './executeMove';
-import { findMoves, getCaptureMoves } from './findHelpers';
-import { highlightMoves } from './highlightMoves';
-import { getDirections } from './utils';
 import { getCapturablePositions } from '.';
+import { EMPTY } from '../constants';
+import { executeMove } from './executeMove';
+import { highlightMoves } from './highlightMoves';
 
 const createResponse = (boardData, isSuccessful, wasExecuted = false) => {
   return {
@@ -32,17 +30,22 @@ export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => 
   const { allCapturablesMoves, startPositions } = getCapturablePositions(board, currentPlayer);
 
   // Mark's all the capturing moves available
-  startPositions.forEach((move) => {
-    board[move[0]][move[1]].hasPossibleCapture = true;
-  });
+  // ? Wasn't used anywhere ?
+  // startPositions.forEach((move) => {
+  //   board[move[0]][move[1]].hasPossibleCapture = true;
+  // });
 
   // If capturing positions are available, force the user to only play on those positions
-  // If a capturing move has a another capturing move available, user must play that to completion
+  // If a capturing move has another capturing move available, user must play that to completion
 
   if (allCapturablesMoves.length > 0) {
     // There is some capturable move available
+
+    // Check if any of those has 
+
     if (allCapturablesMoves.some((move) => move[0] === rowIndex && move[1] === columnIndex)) {
       // User played a capturable move
+
       const newBoard = executeMove(rowIndex, columnIndex, board, currentPlayer);
       return createResponse(newBoard, true, true);
     }

@@ -1,5 +1,3 @@
-import RandomPlayer from "./randomPlayer";
-import MinimaxPlayer from "./minimaxPlayer";
-import AlphaBetaPruning from "./alphaBetaPruningPlayer";
-
-export { RandomPlayer, MinimaxPlayer, AlphaBetaPruning };
+export { default as RandomPlayer } from './random-player';
+export { default as MiniMaxPlayer } from './minimax-player';
+export { default as ABPruningPlayer } from './ab-pruning-player';

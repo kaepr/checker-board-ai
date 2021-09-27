@@ -17,9 +17,10 @@ const findCorrectDirection = (initX, initY, rowIndex, columnIndex, boardData, cu
   return dir;
 };
 
-const createResponse = (boardData) => {
+const createResponse = (boardData, hasAnotherJump) => {
   return {
     boardData,
+    hasAnotherJump,
   };
 };
 

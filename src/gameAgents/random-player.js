@@ -1,6 +1,8 @@
 import { BOARD_SIZE, CELLS_AMOUNT, COMPUTER } from '../constants';
 
 class RandomPlayer {
+  static name = 'random';
+
   constructor(boardData, cellCount, ownCells) {
     this.board = boardData;
     this.cellCount = cellCount;
@@ -15,7 +17,7 @@ class RandomPlayer {
     for (let i = 0; i < BOARD_SIZE; i += 1) {
       for (let j = 0; j < BOARD_SIZE; j += 1) {
         if (boardData[i][j].owner === COMPUTER) {
-          currentCells.push(boardData[i][j]); 
+          currentCells.push(boardData[i][j]);
         }
       }
     }
@@ -25,7 +27,8 @@ class RandomPlayer {
   }
 
   findNextMove() {
-    // Find a valid empty position for any cell from all its own cells
+    // 1. Find any next possible move
+    // 2. 
   }
 }
 

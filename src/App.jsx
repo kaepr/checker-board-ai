@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import Board from './components/Board';
 import MoveList from './components/MoveList';
 import {
@@ -14,25 +15,26 @@ import {
 import GameState from './components/GameState';
 import { highlightCapturingMoves } from './helpers';
 import { COMPUTER } from './constants';
-
-class RandomPlayer {};
-class MiniMaxPlayer {};
-class ABPruningPlayer {};
+import { RandomPlayer, MiniMaxPlayer, ABPruningPlayer } from './gameAgents';
 
 const getAIFromName = (name) => {
   switch (name) {
-    case 'random':
+    case RandomPlayer.name:
       return new RandomPlayer();
-  
+    case MiniMaxPlayer.name:
+      return new MiniMaxPlayer();
+    case ABPruningPlayer.name:
+      return new ABPruningPlayer();
     default:
-      break;
+      return null;
   }
-}
+};
 
 function App() {
   const [gameStarted, setGameStarted] = useState(false);
-  const ai = useRef(null);
-  
+  const [agentType, setAgentType] = useState('');
+  const agent = useRef(null);
+
   const dispatch = useDispatch();
   const board = useSelector(selectBoard);
   const moveList = useSelector(selectMoveList);
@@ -48,15 +50,12 @@ function App() {
     } else {
       setGameStarted(true);
     }
-    ai 
-    // dispatch(setLoading(true));
-    // dispatch(changeWhoseTurn(1));
-    // dispatch(setLoading(false));
+    agent.current = getAIFromName(agentType);
   };
 
-  // useEffect(() => {
-  //   initialize();
-  // }, []);
+  useEffect(() => {
+    initialize();
+  }, []);
 
   useEffect(() => {
     if (board) {
@@ -67,8 +66,7 @@ function App() {
 
   useEffect(() => {
     if (currentPlayer == COMPUTER) {
-      // call method
-      // use handle click
+      agent.current.makeNextMove();
     }
   }, [currentPlayer]);
 

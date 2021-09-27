@@ -7,6 +7,7 @@ const initialCellState = {
   isKing: false,
   isActive: false,
   hasPossibleCapture: false,
+  hasAnotherJump: false,
 };
 
 const initialState = {

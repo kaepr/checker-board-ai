@@ -42,6 +42,10 @@ const getCheckerPieceClass = (data) => {
     classList.push('checker__piece--possible_capture');
   }
 
+  if (data.hasAnotherJump) {
+    classList.push('checker__piece--another_jump');
+  }
+
   return classList.join(' ');
 };
 

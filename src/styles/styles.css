@@ -116,7 +116,7 @@
 }
 
 .checker__piece.checker__piece--valid_move {
-  background: rgb(0, 255, 42);
+  background: rgb(172, 249, 134);
 }
 
 .checker__piece.checker__piece--active {
@@ -125,7 +125,11 @@
 }
 
 .checker__piece.checker__piece--possible_capture {
-  border: 5px solid burlywood;
+  border: 8px solid burlywood;
+}
+
+.checker__piece.checker__piece--another_jump {
+  border: 8px solid rgb(207, 12, 214);
 }
 
 .checker__piece.checker__piece--king {
