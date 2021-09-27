@@ -1,8 +1,22 @@
 import { BOARD_SIZE, PLAYER_1, COMPUTER, PLAYER_2, DRAW, GAME_END } from '../constants';
 import { cloneDeep } from 'lodash';
 
-const createResponse = () => {
-  return {};
+const createResponse = (
+  playerOneCount,
+  playerTwoCount,
+  computerCount,
+  isGameWon,
+  whoseWinner,
+  isGameDraw
+) => {
+  return {
+    playerOneCount,
+    playerTwoCount,
+    computerCount,
+    isGameWon,
+    whoseWinner,
+    isGameDraw,
+  };
 };
 
 /*  
@@ -15,7 +29,7 @@ draw conditions
     2. No pieces have been removed from the board during the previous 50 moves.
 */
 
-export const getGameState = (boardData, turnCount, lastKingMadeAt, lastCaptureAt) => {
+export const getGameState = (boardData, turnCount, lastKingMadeAt, lastCaptureAt, opponent) => {
   // Check if all cells are of one type
   const board = cloneDeep(boardData);
   let playerOneCount = 0;
@@ -38,8 +52,8 @@ export const getGameState = (boardData, turnCount, lastKingMadeAt, lastCaptureAt
   }
 
   //TODO return object
-  if (player1Pieces == 0) {
-    return PLAYER_2;
+  if (player1Pieces === 0) {
+    return createResponse(playerOneCount, playerTwoCount, computerCount);
   }
   if (player2Pieces == 0) {
     return PLAYER_1;
