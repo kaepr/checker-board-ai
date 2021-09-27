@@ -7,7 +7,8 @@ const createResponse = (
   computerCount,
   isGameWon,
   whoseWinner,
-  isGameDraw
+  isGameDraw,
+  continueGame = false
 ) => {
   return {
     playerOneCount,
@@ -16,6 +17,7 @@ const createResponse = (
     isGameWon,
     whoseWinner,
     isGameDraw,
+    continueGame,
   };
 };
 
@@ -28,7 +30,6 @@ draw conditions
     1. Neither player has advanced an uncrowned man towards the king-row during the previous 50 moves
     2. No pieces have been removed from the board during the previous 50 moves.
 */
-
 export const getGameState = (boardData, turnCount, lastKingMadeAt, lastCaptureAt, opponent) => {
   // Check if all cells are of one type
   const board = cloneDeep(boardData);
@@ -51,39 +52,127 @@ export const getGameState = (boardData, turnCount, lastKingMadeAt, lastCaptureAt
     }
   }
 
-  //TODO return object
-  if (player1Pieces === 0) {
-    return createResponse(playerOneCount, playerTwoCount, computerCount);
+  // Handles cases of all cells being used up
+  if (playerOneCount === 0) {
+    // Player 1 has lost
+    // Opponent has Won
+    return createResponse(
+      playerOneCount,
+      playerTwoCount,
+      computerCount,
+      true,
+      opponent,
+      false,
+      false
+    );
   }
-  if (player2Pieces == 0) {
-    return PLAYER_1;
+
+  if (playerTwoCount === 0) {
+    if (opponent === PLAYER_2) {
+      // Player two lost
+      return createResponse(
+        playerOneCount,
+        playerTwoCount,
+        computerCount,
+        true,
+        PLAYER_1,
+        false,
+        false
+      );
+    }
   }
-  // Check if current player has any valid moves next or not
-  let possibleMovesP1 = false;
-  let possibleMovesP2 = false;
+
+  if (computerCount === 0) {
+    if (opponent === COMPUTER) {
+      // Computer lost
+      return createResponse(
+        playerOneCount,
+        playerTwoCount,
+        computerCount,
+        true,
+        PLAYER_1,
+        false,
+        false
+      );
+    }
+  }
+
+  // Handles case of if any remaining playable moves exist
+  let hasMovesPlayerOne = false;
+  let hasMovesPlayerTwo = false;
+  let hasMovesComputer = false;
   for (let i = 0; i < BOARD_SIZE; i++) {
     for (let j = 0; j < BOARD_SIZE; j++) {
-      if (board[i][j].owner == PLAYER_1 && !possibleMovesP1) {
-        let possMoves = findMoves(i, j, board, PLAYER_1);
+      if (board[i][j].owner == PLAYER_1 && !hasMovesPlayerOne) {
+        const possMoves = findMoves(i, j, board, PLAYER_1);
         if (possMoves.length > 0) {
-          possibleMovesP1 = true;
+          hasMovesPlayerOne = true;
         }
       }
 
-      if (board[i][j].owner == (PLAYER_2 || COMPUTER) && !possibleMovesP2) {
-        let possMoves = findMoves(i, j, board, PLAYER_2);
+      if (board[i][j].owner == PLAYER_2 && !hasMovesPlayerTwo) {
+        const possMoves = findMoves(i, j, board, PLAYER_2);
         if (possMoves.length > 0) {
-          possibleMovesP2 = true;
+          hasMovesPlayerTwo = true;
+        }
+      }
+
+      if (board[i][j].owner == COMPUTER && !hasMovesComputer) {
+        const possMoves = findMoves(i, j, board, PLAYER_2);
+        if (possMoves.length > 0) {
+          hasMovesComputer = true;
         }
       }
     }
   }
 
-  if (
-    (currentPlayer == PLAYER_1 && !possibleMovesP1) ||
-    ((currentPlayer == PLAYER_2 || COMPUTER) && !possibleMovesP2)
-  )
-    return DRAW;
-  else return GAME_END;
-  // Check for draw conditions
+  if (!hasMovesPlayerOne) {
+    // Player 1 has lost, as it does not have any moves left
+    return createResponse(
+      playerOneCount,
+      playerTwoCount,
+      computerCount,
+      true,
+      opponent,
+      false,
+      false
+    );
+  }
+
+  if (!hasMovesPlayerTwo) {
+    if (opponent === PLAYER_2) {
+      // Player two lost, as it does have any moves left
+      return createResponse(
+        playerOneCount,
+        playerTwoCount,
+        computerCount,
+        true,
+        PLAYER_1,
+        false,
+        false
+      );
+    }
+  }
+
+  if (!hasMovesComputer) {
+    if (opponent === COMPUTER) {
+      // Computer lost, as it does not have any moves left
+      return createResponse(
+        playerOneCount,
+        playerTwoCount,
+        computerCount,
+        true,
+        PLAYER_1,
+        false,
+        false
+      );
+    }
+  }
+
+  // Handles draw conditions
+  if (turnCount - lastCaptureAt >= 50 || turnCount - lastKingMadeAt >= 50) {
+    return createResponse(playerOneCount, playerTwoCount, computerCount, false, -1, true, false);
+  }
+
+  return createResponse(playerOneCount, playerTwoCount, computerCount, false, -1, false, true);
 };
