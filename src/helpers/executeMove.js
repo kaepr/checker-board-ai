@@ -1,8 +1,6 @@
 import { cloneDeep } from 'lodash';
 import { BOARD_SIZE, COMPUTER, PLAYER_1, PLAYER_2 } from '../constants';
-import {
-  getCleanBoard, getDirections, getInitialCellState, isValidDirection
-} from './utils';
+import { getCleanBoard, getDirections, getInitialCellState, isValidDirection } from './utils';
 
 const findCorrectDirection = (initX, initY, rowIndex, columnIndex, boardData, currentPlayer) => {
   const directions = getDirections(initX, initY, boardData, currentPlayer);
@@ -92,5 +90,5 @@ export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => 
     }
   }
 
-  return board;
+  return cleanedBoard;
 };
