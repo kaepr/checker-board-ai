@@ -17,6 +17,12 @@ const findCorrectDirection = (initX, initY, rowIndex, columnIndex, boardData, cu
   return dir;
 };
 
+const createResponse = (boardData) => {
+  return {
+    boardData,
+  };
+};
+
 export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => {
   // Find that one cell which has isActive flag set to true
   const board = cloneDeep(boardData);

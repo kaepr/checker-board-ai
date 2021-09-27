@@ -1,6 +1,7 @@
-import { cloneDeep } from 'lodash';
+import { clone, cloneDeep } from 'lodash';
 import { getCleanBoard } from './utils';
 import { findMoves } from './findHelpers';
+import { getCapturablePositions } from '.';
 
 /*
 Highlights the next possible moves for the given cell
@@ -22,4 +23,19 @@ export const highlightMoves = (boardData, rowIndex, columnIndex, currentPlayer) 
   });
 
   return cleanedBoard;
+};
+
+/*
+Highlight all capturing moves
+*/
+export const highlightCapturingMoves = (boardData, currentPlayer) => {
+  const board = cloneDeep(boardData);
+
+  const { allCapturablesMoves, startPositions } = getCapturablePositions(board, currentPlayer);
+
+  startPositions.forEach((move) => {
+    board[move[0]][move[1]].hasPossibleCapture = true;
+  });
+
+  return board;
 };

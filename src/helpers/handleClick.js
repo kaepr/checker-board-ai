@@ -13,9 +13,16 @@ const createResponse = (boardData, isSuccessful, wasExecuted = false) => {
   };
 };
 
-const getCapturablePositions = (board, currentPlayer) => {
+export const getCapturablePositions = (board, currentPlayer) => {
+  console.log('current board ', board, currentPlayer);
+
   let allCapturablesMoves = [];
   let startPositions = [];
+
+  if (board.length === 0) {
+    return { allCapturablesMoves, startPositions };
+  }
+
   for (let i = 0; i < BOARD_SIZE; i += 1) {
     for (let j = 0; j < BOARD_SIZE; j += 1) {
       if (board[i][j].owner === currentPlayer) {
@@ -39,15 +46,15 @@ export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => 
 
   // This handles user click on an empty cell, and specifically on that empty cell who is confirmed to be not a valid next move
   if (cellData.owner === EMPTY && !cellData.isValidNextMove) {
-    return createResponse(board, false);
+    return createResponse(board, false, false);
   }
 
-  // Or they clicked enemy cell, (and the cell was not empty)
+  // Or they clicked on a cell not their own, (and the cell was not empty)
   if (cellData.owner != currentPlayer && cellData.owner != EMPTY) {
-    return createResponse(board, false);
+    return createResponse(board, false, false);
   }
 
-  // For all of current Player moves, get all capturables moves possible
+  // Get all capturables moves possible for current player
   const { allCapturablesMoves, startPositions } = getCapturablePositions(board, currentPlayer);
 
   // Mark's all the capturing moves available
@@ -55,11 +62,11 @@ export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => 
     board[move[0]][move[1]].hasPossibleCapture = true;
   });
 
-  // If capturing positions are avalaibale, force the user to only play on those positions
+  // If capturing positions are available, force the user to only play on those positions
   // If a capturing move has a another capturing move available, user must play that to completion
 
   if (allCapturablesMoves.length > 0) {
-    // There is some capturable move avalaible
+    // There is some capturable move available
     if (allCapturablesMoves.some((move) => move[0] === rowIndex && move[1] === columnIndex)) {
       // User played a capturable move
       const newBoard = executeMove(rowIndex, columnIndex, board, currentPlayer);

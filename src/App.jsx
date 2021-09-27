@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Board from './components/Board';
 import MoveList from './components/MoveList';
@@ -12,12 +12,16 @@ import {
   setLoading,
 } from './features/game/gameSlice';
 import GameState from './components/GameState';
+import { highlightCapturingMoves } from './helpers';
 
 function App() {
   const dispatch = useDispatch();
   const board = useSelector(selectBoard);
   const moveList = useSelector(selectMoveList);
   const loading = useSelector(selectLoading);
+  const currentPlayer = useSelector(selectWhoseTurn);
+
+  const [highlightedBoard, setHighlightedBoard] = useState(board);
 
   const initialize = () => {
     // dispatch(setLoading(true));
@@ -29,7 +33,19 @@ function App() {
   useEffect(() => {
     initialize();
     // dispatch(setLoading(true));
+    // const boardWithCapureHighligted = highlightCapturingMoves(board, currentPlayer);
+    // setHighlightedBoard(boardWithCapureHighligted);
   }, []);
+
+  useEffect(() => {
+    // initialize();
+    // dispatch(setLoading(true));
+    if (board) {
+      const boardWithCapureHighligted = highlightCapturingMoves(board, currentPlayer);
+      setHighlightedBoard(boardWithCapureHighligted);
+      console.log('new highligted board', boardWithCapureHighligted);
+    }
+  }, [board]);
 
   return (
     <div className="container">
@@ -42,7 +58,7 @@ function App() {
       </div>
       <GameState />
       <div className="board-and-moves-container">
-        <Board boardData={board} />
+        <Board boardData={highlightedBoard} />
         <MoveList moveList={moveList} />
       </div>
     </div>

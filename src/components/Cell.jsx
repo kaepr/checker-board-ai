@@ -37,7 +37,6 @@ const getCheckerPieceClass = (data) => {
   if (data.isValidNextMove) {
     classList.push('checker__piece--valid_move');
   }
-
   if (data.hasPossibleCapture) {
     classList.push('checker__piece--possible_capture');
   }
@@ -48,7 +47,7 @@ const getCheckerPieceClass = (data) => {
 const Cell = ({ data, xPosition, yPosition }) => {
   const checkerClassNames = useMemo(
     () => getCheckerPieceClass(data),
-    [data.owner, data.isKing, data.isActive, data.isValidNextMove]
+    [data.owner, data.isKing, data.isActive, data.isValidNextMove, data.hasPossibleCapture]
   );
 
   const dispatch = useDispatch();

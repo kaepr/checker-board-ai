@@ -18,15 +18,25 @@ draw conditions
 export const getGameState = (boardData, turnCount, lastKingMadeAt) => {
   // Check if all cells are of one type
   const board = cloneDeep(boardData);
-  let player1Pieces = 0;
-  let player2Pieces = 0;
+  let playerOneCount = 0;
+  let playerTwoCount = 0;
+  let computerCount = 0;
   for (let i = 0; i < BOARD_SIZE; i++) {
     for (let j = 0; j < BOARD_SIZE; j++) {
-      if (board[i][j].owner == PLAYER_1) player1Pieces++;
-      if (board[i][j].owner != EMPTY || board[i][j].owner == (PLAYER_2 || COMPUTER))
-        player2Pieces++;
+      if (board[i][j].owner === PLAYER_1) {
+        playerOneCount += 1;
+      }
+
+      if (board[i][j].owner === PLAYER_2) {
+        playerTwoCount += 1;
+      }
+
+      if (board[i][j].owner === COMPUTER) {
+        computerCount += 1;
+      }
     }
   }
+  
   //TODO return object
   if (player1Pieces == 0) {
     return PLAYER_2;
