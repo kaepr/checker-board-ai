@@ -4,6 +4,16 @@ import { BOARD_SIZE, COMPUTER, PLAYER_1, PLAYER_2 } from '../constants';
 import { getCleanBoard, getDirections, getInitialCellState, isValidDirection } from './utils';
 
 const findCorrectDirection = (initX, initY, rowIndex, columnIndex, boardData, currentPlayer) => {
+  // console.log(
+  //   'inside find correct directions',
+  //   initX,
+  //   initY,
+  //   rowIndex,
+  //   columnIndex,
+  //   boardData,
+  //   currentPlayer
+  // );
+
   const directions = getDirections(initX, initY, boardData, currentPlayer);
 
   // Find the correct direction of isActive Cell towards current cell
@@ -18,11 +28,12 @@ const findCorrectDirection = (initX, initY, rowIndex, columnIndex, boardData, cu
   return dir;
 };
 
-const createResponse = (boardData, hasAnotherJump, kingMade) => {
+const createResponse = (boardData, hasAnotherJump, kingMade, captureMade) => {
   return {
     boardData,
     hasAnotherJump,
     kingMade,
+    captureMade,
   };
 };
 
@@ -54,7 +65,6 @@ export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => 
 
   // Original cell should now become empty
 
-  // TODO Maybe change this later when implementing forceful captures
   // Change position of cell to new index
   board[rowIndex][columnIndex] = {
     owner: board[i][j].owner,
@@ -65,6 +75,7 @@ export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => 
   };
 
   let playedAdjacent = false;
+  let captureMade = false;
 
   if (nextX == rowIndex && columnIndex == nextY) {
     // moved to adjacent cell
@@ -72,6 +83,7 @@ export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => 
   } else {
     // Capture is successful, make middle position empty
     board[nextX][nextY] = getInitialCellState();
+    captureMade = true;
   }
 
   // Reset the cell from which execution started
@@ -99,7 +111,7 @@ export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => 
   // For Player 2 / Computer Cells
   // Check inside the BOARD_SIZE -  1'th row
   for (let i = 0; i < BOARD_SIZE; i += 1) {
-    if (cleanedBoard[BOARD_SIZE - 1][i].owner == (PLAYER_2 || COMPUTER)) {
+    if (cleanedBoard[BOARD_SIZE - 1][i].owner == COMPUTER) {
       // Player 2 or comuters cells reached last position, make it king cell
       cleanedBoard[BOARD_SIZE - 1][i].isKing = true;
 
@@ -111,12 +123,12 @@ export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => 
 
   // As king was made in this turn, cannot make multiple jumps
   if (kingMadeInMove) {
-    return createResponse(cleanedBoard, false, kingMadeInMove);
+    return createResponse(cleanedBoard, false, kingMadeInMove, captureMade);
   }
 
   // If played adjacent, no need to check for further capturing jumps
   if (playedAdjacent) {
-    return createResponse(cleanedBoard, false, kingMadeInMove);
+    return createResponse(cleanedBoard, false, kingMadeInMove, false);
   }
 
   // Check if this cell has another capturing move or not
@@ -132,9 +144,9 @@ export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => 
   if (newCaptures.length > 0) {
     // This cell has another capturing move available, so it will make multiple jumps
     cleanedBoard[rowIndex][columnIndex].hasAnotherJump = true;
-    return createResponse(cleanedBoard, true, false);
+    return createResponse(cleanedBoard, true, false, true);
   } else {
     // move does not have any more capturing moves
-    return createResponse(cleanedBoard, false, false);
+    return createResponse(cleanedBoard, false, false, true);
   }
 };

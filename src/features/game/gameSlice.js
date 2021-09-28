@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { BOARD_SIZE, CELLS_AMOUNT, EMPTY, PLAYER_1, PLAYER_2 } from '../../constants';
+import { BOARD_SIZE, CELLS_AMOUNT, COMPUTER, EMPTY, PLAYER_1, PLAYER_2 } from '../../constants';
 
 const initialCellState = {
   owner: EMPTY,
@@ -37,7 +37,7 @@ const createNewBoard = (intializeInfo) => {
   for (let i = 0; i < 3; i++) {
     for (let j = 0; j < BOARD_SIZE; j++) {
       if ((i + j) % 2 == 0) {
-        board[i][j].owner = PLAYER_2;
+        board[i][j].owner = COMPUTER;
       }
     }
   }

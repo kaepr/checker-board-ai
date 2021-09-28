@@ -76,8 +76,8 @@ export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => 
 
     // TODO Hmm might bug out later
     if (exists) {
-      console.log('has another jump', multiJumpCaptures);
-      console.log('i, j, row, col', i, j, rowIndex, columnIndex);
+      // console.log('has another jump', multiJumpCaptures);
+      // console.log('i, j, row, col', i, j, rowIndex, columnIndex);
 
       if (multiJumpCaptures.some((move) => move[0] === rowIndex && move[1] === columnIndex)) {
         // Played at some point which the has another jump cell can make

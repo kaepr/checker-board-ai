@@ -36,7 +36,7 @@ const Cell = ({ data, xPosition, yPosition }) => {
     dispatch(setBoard(result.boardData));
 
     if (result.wasExecuted) {
-      console.log('executed successfully = ', result);
+      // console.log('executed successfully = ', result);
 
       if (result.wasKingMade) {
         dispatch(setKingMadeAt(turnCount));
@@ -47,7 +47,7 @@ const Cell = ({ data, xPosition, yPosition }) => {
       }
 
       if (whoseTurn == PLAYER_1) {
-        dispatch(changeWhoseTurn(PLAYER_2));
+        dispatch(changeWhoseTurn(COMPUTER));
       } else if (whoseTurn == PLAYER_2) {
         dispatch(changeWhoseTurn(PLAYER_1));
       }

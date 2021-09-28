@@ -4,31 +4,36 @@ import { useDispatch, useSelector } from 'react-redux';
 import Board from './components/Board';
 import MoveList from './components/MoveList';
 import {
+  changeTurnCountByAmount,
   changeWhoseTurn,
   initializeGame,
   selectBoard,
   selectLoading,
   selectMoveList,
+  selectTurnCount,
   selectWhoseTurn,
+  setBoard,
+  setCaptureMadeAt,
+  setKingMadeAt,
   setLoading,
 } from './features/game/gameSlice';
 import GameState from './components/GameState';
 import { getGameState, highlightCapturingMoves } from './helpers';
-import { COMPUTER, DEPTH } from './constants';
+import { CELLS_AMOUNT, COMPUTER, DEPTH, PLAYER_1 } from './constants';
 import { RandomPlayer, MiniMaxPlayer, ABPruningPlayer } from './gameAgents';
 
-const getAIFromName = (name) => {
-  switch (name) {
-    case RandomPlayer.name:
-      return new RandomPlayer();
-    case MiniMaxPlayer.name:
-      return new MiniMaxPlayer(DEPTH);
-    case ABPruningPlayer.name:
-      return new ABPruningPlayer();
-    default:
-      return null;
-  }
-};
+// const getAIFromName = (name) => {
+//   switch (name) {
+//     case RandomPlayer.name:
+//       return new RandomPlayer();
+//     case MiniMaxPlayer.name:
+//       return new MiniMaxPlayer(DEPTH);
+//     case ABPruningPlayer.name:
+//       return new ABPruningPlayer();
+//     default:
+//       return null;
+//   }
+// };
 
 function App() {
   const [gameStarted, setGameStarted] = useState(false);
@@ -40,6 +45,7 @@ function App() {
   const moveList = useSelector(selectMoveList);
   const loading = useSelector(selectLoading);
   const currentPlayer = useSelector(selectWhoseTurn);
+  const turnCount = useSelector(selectTurnCount);
 
   const [highlightedBoard, setHighlightedBoard] = useState(board);
 
@@ -50,7 +56,7 @@ function App() {
     } else {
       setGameStarted(true);
     }
-    agent.current = getAIFromName(agentType);
+    // agent.current = getAIFromName(agentType);
   };
 
   useEffect(() => {
@@ -66,7 +72,24 @@ function App() {
 
   useEffect(() => {
     if (currentPlayer == COMPUTER) {
-      agent.current.makeNextMove();
+      // agent.current.makeNextMove();
+
+      const randPlayer = new RandomPlayer(board, CELLS_AMOUNT, 12);
+      randPlayer.updateInfo(board);
+
+      const data = randPlayer.findNextMove();
+
+      if (data.kingMade) {
+        dispatch(setKingMadeAt(turnCount));
+      }
+
+      if (data.captureMade) {
+        dispatch(setCaptureMadeAt(turnCount));
+      }
+
+      dispatch(setBoard(data.board));
+      dispatch(changeTurnCountByAmount(1));
+      dispatch(changeWhoseTurn(PLAYER_1));
     }
   }, [currentPlayer]);
 
