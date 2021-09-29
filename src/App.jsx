@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Board from './components/Board';
-import MoveList from './components/MoveList';
 import {
   changeTurnCountByAmount,
   changeWhoseTurn,
@@ -12,6 +11,7 @@ import {
   selectKingMadeAt,
   selectLoading,
   selectMoveList,
+  selectOpponent,
   selectTurnCount,
   selectWhoseTurn,
   setBoard,
@@ -30,8 +30,6 @@ const getAIFromName = (name) => {
       return new RandomPlayer();
     case MiniMaxPlayer.name:
       return new MiniMaxPlayer(DEPTH);
-    case ABPruningPlayer.name:
-      return new ABPruningPlayer();
     default:
       return null;
   }
@@ -39,37 +37,44 @@ const getAIFromName = (name) => {
 
 function App() {
   const [gameStarted, setGameStarted] = useState(false);
+  const [gameFinished, setGameFinished] = useState(false);
+  const [winner, setWinner] = useState('');
   const [agentType, setAgentType] = useState('minimax');
   const agent = useRef(null);
 
   const dispatch = useDispatch();
   const board = useSelector(selectBoard);
-  const moveList = useSelector(selectMoveList);
   const loading = useSelector(selectLoading);
   const currentPlayer = useSelector(selectWhoseTurn);
   const turnCount = useSelector(selectTurnCount);
   const lastKingMadeAt = useSelector(selectKingMadeAt);
   const lastCaptureMadeAt = useSelector(selectCaptureMadeAt);
+  const opponent = useSelector(selectOpponent);
 
   const [highlightedBoard, setHighlightedBoard] = useState(board);
 
-  const initialize = () => {
-    agent.current = getAIFromName(agentType);
-    dispatch(
-      initializeGame({
-        againstWhom: COMPUTER,
-      })
-    );
+  const initialize = (againstWhom) => {
+    if (againstWhom === PLAYER_2) {
+      dispatch(
+        initializeGame({
+          againstWhom: COMPUTER,
+        })
+      );
+    } else {
+      agent.current = getAIFromName(agentType);
+      dispatch(
+        initializeGame({
+          againstWhom: COMPUTER,
+        })
+      );
+    }
+
     if (gameStarted) {
       setGameStarted(false);
     } else {
       setGameStarted(true);
     }
   };
-
-  useEffect(() => {
-    initialize();
-  }, []);
 
   useEffect(() => {
     if (board) {
@@ -79,36 +84,57 @@ function App() {
   }, [board]);
 
   useEffect(() => {
-    // console.log(agent.current);
-    if (currentPlayer == COMPUTER) {
-      let data;
-      if (agent.current.name === MiniMaxPlayer.name) {
-        data = agent.current.findNextMove(board, {
-          turnCount,
-          lkmat: lastKingMadeAt,
-          lcat: lastCaptureMadeAt,
-          player: currentPlayer,
-        });
-      } else {
-        agent.current.updateInfo(board);
-        data = agent.current.findNextMove();
+    if (!gameFinished) {
+      if (currentPlayer == COMPUTER) {
+        let data;
+        if (agent.current.name === MiniMaxPlayer.name) {
+          data = agent.current.findNextMove(board, {
+            turnCount,
+            lkmat: lastKingMadeAt,
+            lcat: lastCaptureMadeAt,
+            player: currentPlayer,
+          });
+        } else {
+          agent.current.updateInfo(board);
+          data = agent.current.findNextMove();
+        }
+
+        if (data.kingMade) {
+          dispatch(setKingMadeAt(turnCount));
+        }
+
+        if (data.captureMade) {
+          dispatch(setCaptureMadeAt(turnCount));
+        }
+
+        dispatch(setBoard(data.board));
+        dispatch(changeTurnCountByAmount(1));
+        dispatch(changeWhoseTurn(PLAYER_1));
+      }
+    }
+
+    if (gameStarted) {
+      const gameState = getGameState(board, turnCount, lastKingMadeAt, lastCaptureMadeAt, opponent);
+
+      if (gameState.isGameWon) {
+        setGameFinished(true);
+        if (gameState.whoseWinner === PLAYER_1) {
+          setWinner('PLAYER 1');
+        }
+
+        if (gameState.whoseWinner === PLAYER_2) {
+          setWinner('PLAYER 2');
+        }
+
+        if (gameState.whoseWinner === COMPUTER) {
+          setWinner('COMPUTER');
+        }
       }
 
-      // agent.current.makeNextMove();
-      // const randPlayer = new RandomPlayer(board, CELLS_AMOUNT, 12);
-      // randPlayer.updateInfo(board);
-
-      if (data.kingMade) {
-        dispatch(setKingMadeAt(turnCount));
+      if (gameState.isGameDraw) {
+        setGameFinished(true);
+        setWinner('Draw');
       }
-
-      if (data.captureMade) {
-        dispatch(setCaptureMadeAt(turnCount));
-      }
-
-      dispatch(setBoard(data.board));
-      dispatch(changeTurnCountByAmount(1));
-      dispatch(changeWhoseTurn(PLAYER_1));
     }
   }, [currentPlayer]);
 
@@ -131,17 +157,15 @@ function App() {
           >
             <option value="random">Random</option>
             <option value="minimax">MiniMax</option>
-            <option value="abpruning">αβ Pruning</option>
           </select>
           <button className="btn-primary mt-4" onClick={initialize}>
             {gameStarted ? 'Reset' : 'Start'}
           </button>
         </div>
       </div>
-      <GameState />
+      <GameState gameStarted={gameStarted} gameFinished={gameFinished} />
       <div className="board-and-moves-container">
         <Board boardData={highlightedBoard} />
-        <MoveList moveList={moveList} />
       </div>
     </div>
   );

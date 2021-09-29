@@ -38,8 +38,6 @@ const Cell = ({ data, xPosition, yPosition }) => {
     dispatch(setBoard(result.boardData));
 
     if (result.wasExecuted) {
-      // console.log('executed successfully = ', result);
-
       if (result.wasKingMade) {
         dispatch(setKingMadeAt(turnCount));
       }
