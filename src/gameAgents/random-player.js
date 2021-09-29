@@ -9,15 +9,6 @@ function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
-// const initialCellState = {
-//   owner: EMPTY,
-//   isValidNextMove: false,
-//   isKing: false,
-//   isActive: false,
-//   hasPossibleCapture: false,
-//   hasAnotherJump: false,
-// };
-
 class RandomPlayer {
   static name = 'random';
 
@@ -55,14 +46,10 @@ class RandomPlayer {
     let captureMade = false;
     let boardCopy = cloneDeep(this.board);
 
-    console.log(this.cells);
-
     while (!moveFound) {
       // Find any move which can be executed
       const randomIndex = getRandomNumber(0, this.cells.length);
       const initCell = this.cells[randomIndex];
-
-      console.log('init cell', initCell);
 
       const possibleNextMoves = findMoves(
         initCell.rowIndex,
