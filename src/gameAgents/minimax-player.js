@@ -43,6 +43,9 @@ class MiniMaxPlayer {
   }
 
   minimax = (_board, depth, isMin, turnCount, lkmat, lcat, player) => {
+    // console.log('------ MINIMAX CALLED ------------');
+    // console.log(depth, isMin, turnCount, player);
+
     const state = getGameState(_board, turnCount, lkmat, lcat, player);
     if (depth == 0 || state.isGameWon || state.isGameDraw) {
       return [calculateUtility(_board), _board, turnCount, lkmat, lcat];
@@ -50,22 +53,24 @@ class MiniMaxPlayer {
 
     const board = cloneDeep(_board);
 
+    // console.log('new board', board);
+
     let bestMoveBoard;
     let candidateUtility = isMin ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY;
     // we're checking all the next possible moves
-    for (const bestMoveBoardCandidate of this.getAllBoards(board, isMin ? COMPUTER : PLAYER_1)) {
+    for (const bestMoveBoardCandidate of this.getAllBoards(board, isMin ? PLAYER_1 : COMPUTER)) {
       // for ith possible move, we're checking for the next depth - 1 moves
       let nlkmat = lkmat;
       let nlcat = lcat;
       if (bestMoveBoardCandidate.kingMade) {
-        nklmat = turnCount;
+        nlkmat = turnCount;
       }
 
       if (bestMoveBoardCandidate.captureMade) {
         nlcat = turnCount;
       }
 
-      utility = this.minimax(
+      const utility = this.minimax(
         bestMoveBoardCandidate.board,
         depth - 1,
         !isMin,
@@ -106,6 +111,14 @@ class MiniMaxPlayer {
    */
 
   getAllBoards = (_board, player) => {
+    // console.log('INSIDE GET ALL BOARDS');
+
+    // if (player === COMPUTER) {
+    //   console.log('Computer TURN');
+    // } else {
+    //   console.log('PLAYER TURN');
+    // }
+
     const board = cloneDeep(_board);
 
     const boards = [];
@@ -113,6 +126,8 @@ class MiniMaxPlayer {
     const { allCapturablesMoves, startPositions } = getCapturablePositions(board, COMPUTER);
 
     let totalPositions;
+
+    // console.log('all capturing, start positions', allCapturablesMoves, startPositions);
 
     if (allCapturablesMoves.length > 0) {
       // some move exists which can capture
@@ -122,9 +137,14 @@ class MiniMaxPlayer {
       totalPositions = getDiscPositions(board, player);
     }
 
+    // console.log('total positions', totalPositions);
+    // console.log('player ', player);
+
     for (const piece of totalPositions) {
       const [i, j] = piece;
       const validMoves = findMoves(i, j, board, player);
+
+      // console.log('all valid moves', i, j, validMoves);
 
       for (const move of validMoves) {
         let boardCopy = cloneDeep(board);
@@ -136,7 +156,7 @@ class MiniMaxPlayer {
         let captureMade = false;
 
         while (!moveExecuted) {
-          const executeResponse = executeMove(destX, destY, boardCopy, COMPUTER);
+          const executeResponse = executeMove(destX, destY, boardCopy, player);
 
           // Update board with new info
           boardCopy = executeResponse.boardData;
@@ -157,7 +177,7 @@ class MiniMaxPlayer {
             // board[destX][destY].hasAnotherJump = true
 
             // Find next moves for this cell
-            const nxtMoves = findMoves(destX, destY, boardCopy, COMPUTER);
+            const nxtMoves = findMoves(destX, destY, boardCopy, player);
 
             // Update new final capture position ( multiple jump case )
 
@@ -191,19 +211,19 @@ class MiniMaxPlayer {
     // call minimax here and get the new board and the other stuff
     [calculateUtility(_board), _board, turnCount, lkmat, lcat];
 
-    console.log('inside find next move');
+    // console.log('inside find next move');
 
     const [maxUtility, board, tc, lastKingMadeAt, lastCaptureMadeAt] = this.minimax(
       _board,
       DEPTH,
-      true,
+      false,
       turnCount,
       lkmat,
       lcat,
       player
     );
 
-    console.log('got result back');
+    // console.log('got result back');
 
     let kingMade = false;
     let captureMade = false;

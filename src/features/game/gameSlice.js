@@ -25,7 +25,7 @@ const initialState = {
 };
 
 const createNewBoard = (initializeInfo) => {
-  console.log(' inside create new board', initializeInfo);
+  // console.log(' inside create new board', initializeInfo);
 
   let board = [];
   for (let i = 0; i < BOARD_SIZE; i++) {

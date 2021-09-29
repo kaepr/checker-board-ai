@@ -79,7 +79,7 @@ function App() {
   }, [board]);
 
   useEffect(() => {
-    console.log(agent.current);
+    // console.log(agent.current);
     if (currentPlayer == COMPUTER) {
       let data;
       if (agent.current.name === MiniMaxPlayer.name) {
