@@ -22,7 +22,7 @@ import {
 import GameState from './components/GameState';
 import { getGameState, highlightCapturingMoves } from './helpers';
 import { CELLS_AMOUNT, COMPUTER, DEPTH, PLAYER_1, PLAYER_2 } from './constants';
-import { RandomPlayer, MiniMaxPlayer, ABPruningPlayer } from './gameAgents';
+import { RandomPlayer, MiniMaxPlayer } from './gameAgents';
 
 const getAIFromName = (name) => {
   switch (name) {
@@ -82,14 +82,13 @@ function App() {
     console.log(agent.current);
     if (currentPlayer == COMPUTER) {
       let data;
-      if(agent.current.name === MiniMaxPlayer.name){
+      if (agent.current.name === MiniMaxPlayer.name) {
         data = agent.current.findNextMove(board, {
           turnCount,
           lkmat: lastKingMadeAt,
           lcat: lastCaptureMadeAt,
-          player: currentPlayer
+          player: currentPlayer,
         });
-
       } else {
         agent.current.updateInfo(board);
         data = agent.current.findNextMove();
