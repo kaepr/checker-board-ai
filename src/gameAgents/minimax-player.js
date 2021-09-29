@@ -1,11 +1,36 @@
 import { cloneDeep } from 'lodash';
-import { findMoves } from '../helpers/findHelpers';
-import { getDiscPositions } from '../helpers/utils';
+import { PLAYER_1, COMPUTER } from '../constants';
+import { findMoves, getDiscPositions, executeMove, getGameState } from '../helpers';
+
+const calculateUtility = (board) => {
+  let playerDiscs = 0;
+  let aiDiscs = 0;
+  let playerKings = 0;
+  let aiKings = 0;
+
+  for (const row in board) {
+    for (const { owner, isKing } in row) {
+      if (owner == PLAYER_1) {
+        if (isKing) {
+          playerKings++;
+        } else {
+          playerDiscs++;
+        }
+      } else {
+        if (isKing) {
+          aiKings++;
+        } else {
+          aiDiscs++;
+        }
+      }
+    }
+  }
+
+  return (playerKings - aiKings) * 2 + (playerDiscs - aiDiscs);
+};
 
 class MiniMaxPlayer {
   static name = 'minimax';
-  /** @type {number} */
-  depth;
 
   /**
    * @param {number[][]} board
@@ -14,7 +39,11 @@ class MiniMaxPlayer {
    *
    * @returns {}
    */
-  makeNextMove = (_board, depth, isMin) => {
+  minimax = (_board, depth, isMin, turnCount, lkmat, lcat, player) => {
+    if (depth == 0 || getGameState(board, turnCount, lkmat, lcat, player)) {
+      return [calculateUtility(board), board];
+    }
+
     const board = cloneDeep(_board);
     if (isMin) {
       let bestMove;
@@ -52,18 +81,30 @@ class MiniMaxPlayer {
 
     for (const piece in getDiscPositions(board, player)) {
       const [i, j] = piece;
-      const validMoves = findMoves(
-        i,
-        j,
-        board,
-        player
-      );
+      const validMoves = findMoves(i, j, board, player);
       for (const move in validMoves) {
-        
+        const { boardData, hasAnotherJump, kingMade, captureMade } = executeMove(
+          move[0],
+          move[1],
+          board,
+          player
+        );
+        moves.push(boardData);
       }
     }
     // calculate the possible moves
-    return [];
+    return moves;
+  };
+
+  makeNextMove = (_board) => {
+    const kingMade = true;
+    const captureMade = true;
+    // call minimax here and get the new board and the other stuff
+    return {
+      board: _board,
+      kingMade,
+      captureMade,
+    };
   };
 }
 

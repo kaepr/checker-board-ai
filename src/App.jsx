@@ -22,18 +22,18 @@ import { getGameState, highlightCapturingMoves } from './helpers';
 import { CELLS_AMOUNT, COMPUTER, DEPTH, PLAYER_1, PLAYER_2 } from './constants';
 import { RandomPlayer, MiniMaxPlayer, ABPruningPlayer } from './gameAgents';
 
-// const getAIFromName = (name) => {
-//   switch (name) {
-//     case RandomPlayer.name:
-//       return new RandomPlayer();
-//     case MiniMaxPlayer.name:
-//       return new MiniMaxPlayer(DEPTH);
-//     case ABPruningPlayer.name:
-//       return new ABPruningPlayer();
-//     default:
-//       return null;
-//   }
-// };
+const getAIFromName = (name) => {
+  switch (name) {
+    case RandomPlayer.name:
+      return new RandomPlayer();
+    case MiniMaxPlayer.name:
+      return new MiniMaxPlayer(DEPTH);
+    case ABPruningPlayer.name:
+      return new ABPruningPlayer();
+    default:
+      return null;
+  }
+};
 
 function App() {
   const [gameStarted, setGameStarted] = useState(false);
@@ -52,7 +52,7 @@ function App() {
   const initialize = () => {
     dispatch(
       initializeGame({
-        againstWhom: PLAYER_2,
+        againstWhom: COMPUTER,
       })
     );
     if (gameStarted) {
@@ -60,7 +60,7 @@ function App() {
     } else {
       setGameStarted(true);
     }
-    // agent.current = getAIFromName(agentType);
+    agent.current = getAIFromName(agentType);
   };
 
   useEffect(() => {
@@ -78,10 +78,10 @@ function App() {
     if (currentPlayer == COMPUTER) {
       // agent.current.makeNextMove();
 
-      const randPlayer = new RandomPlayer(board, CELLS_AMOUNT, 12);
-      randPlayer.updateInfo(board);
+      // const randPlayer = new RandomPlayer(board, CELLS_AMOUNT, 12);
+      // randPlayer.updateInfo(board);
 
-      const data = randPlayer.findNextMove();
+      const data = agent.current.findNextMove();
 
       if (data.kingMade) {
         dispatch(setKingMadeAt(turnCount));
@@ -95,6 +95,8 @@ function App() {
       dispatch(changeTurnCountByAmount(1));
       dispatch(changeWhoseTurn(PLAYER_1));
     }
+
+    // getGameState(asdas,asdasd,asdasd)
   }, [currentPlayer]);
 
   return (

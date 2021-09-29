@@ -86,7 +86,7 @@ const gameSlice = createSlice({
             whoseTurn: PLAYER_1,
             kingMadeAt: 0,
             captureMadeAt: 0,
-            payload: initializeInfo.againstWhom,
+            opponent: initializeInfo.againstWhom,
           },
         };
       },
