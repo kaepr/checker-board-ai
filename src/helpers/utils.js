@@ -29,6 +29,7 @@ export const getDiscPositions = (board, player) => {
 /*
 Get all directions for provided cell
 */
+
 export const getDirections = (rowIndex, columnIndex, board, currentPlayer) => {
   let directions = [];
   // console.log('inside get directions', rowIndex, columnIndex, board, currentPlayer);

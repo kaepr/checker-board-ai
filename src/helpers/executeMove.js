@@ -101,7 +101,10 @@ export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => 
   // For Player 2 / Computer Cells
   // Check inside the BOARD_SIZE -  1'th row
   for (let i = 0; i < BOARD_SIZE; i += 1) {
-    if (cleanedBoard[BOARD_SIZE - 1][i].owner == COMPUTER) {
+    if (
+      cleanedBoard[BOARD_SIZE - 1][i].owner == COMPUTER ||
+      cleanedBoard[BOARD_SIZE - 1][i].owner == PLAYER_2
+    ) {
       // Player 2 or comuters cells reached last position, make it king cell
       cleanedBoard[BOARD_SIZE - 1][i].isKing = true;
 

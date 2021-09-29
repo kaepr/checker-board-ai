@@ -26,8 +26,6 @@ const Cell = ({ data, xPosition, yPosition }) => {
   const turnCount = useSelector(selectTurnCount);
   const opponent = useSelector(selectOpponent);
 
-  console.log('opponent', opponent);
-
   const handlePlayerClick = (e) => {
     e.stopPropagation();
 

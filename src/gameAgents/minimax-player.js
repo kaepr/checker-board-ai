@@ -1,6 +1,12 @@
 import { cloneDeep } from 'lodash';
 import { PLAYER_1, COMPUTER, DEPTH } from '../constants';
-import { findMoves, getDiscPositions, executeMove, getGameState } from '../helpers';
+import {
+  findMoves,
+  getDiscPositions,
+  executeMove,
+  getGameState,
+  getCapturablePositions,
+} from '../helpers';
 
 const calculateUtility = (board) => {
   let playerDiscs = 0;
@@ -26,7 +32,7 @@ const calculateUtility = (board) => {
     }
   }
 
-  return (playerKings - aiKings) * 2 + (playerDiscs - aiDiscs);
+  return (aiKings - playerKings) * 2 + (aiDiscs - playerDiscs);
 };
 
 class MiniMaxPlayer {
@@ -41,26 +47,49 @@ class MiniMaxPlayer {
    */
   minimax = (_board, depth, isMin, turnCount, lkmat, lcat, player) => {
     const state = getGameState(board, turnCount, lkmat, lcat, player);
-    if (depth == 0 || ) {
-      return [calculateUtility(board), board];
+    if (depth == 0 || state.isGameWon || state.isGameDraw) {
+      return [calculateUtility(board), board, turnCount, lkmat, lcat];
     }
 
     const board = cloneDeep(_board);
     if (isMin) {
       let bestMoveBoard;
       let minUtility = Number.POSITIVE_INFINITY;
-      for (const board in this.getAllBoards(board, PLAYER_1)) {
-        utility = this.minimax(board, depth - 1, !isMin)[0];
+      // we're checking all the next possible moves
+      for (const bestMoveBoardCandidate in this.getAllBoards(bestMoveBoardCandidate, COMPUTER)) {
+        // for ith possible move, we're checking for the next depth - 1 moves
+        let nlkmat = lkmat;
+        let nlcat = lcat;
+        if (bestMoveBoardCandidate.kingMade) {
+          nklmat = turnCount;
+        }
+
+        if (bestMoveBoardCandidate.captureMade) {
+          nlcat = turnCount;
+        }
+
+        utility = this.minimax(
+          bestMoveBoardCandidate.board,
+          depth - 1,
+          !isMin,
+          turnCount + 1,
+          nlkmat,
+          nlcat,
+          PLAYER_1
+        )[0];
+
+        // we're updating the min utility
         minUtility = Math.min(minUtility, utility);
+        // if the minUtility is same as utility, that means we have our best move board
         if (minUtility == utility) {
-          bestMoveBoard = board;
+          bestMoveBoard = bestMoveBoardCandidate.board;
         }
       }
-      return [minUtility, bestMoveBoard];
+      return [minUtility, bestMoveBoard, turnCount];
     } else {
       let bestMoveBoard;
       let maxUtility = Number.NEGATIVE_INFINITY;
-      for (const board in this.getAllBoards(board, COMPUTER)) {
+      for (const board in this.getAllBoards(board, PLAYER_1)) {
         utility = this.minimax(board, depth - 1, !isMin)[0];
         maxUtility = Math.max(maxUtility, utility);
         if (maxUtility == utility) {
@@ -73,9 +102,11 @@ class MiniMaxPlayer {
 
   /**
    * Returns the next board positions for all player's valid next moves
+   * If there are some which have captures available, then only find the next boards
+   * for those specific cells
    * @param {number[][]} board
    * @param {number} player
-   * 
+   *
    * @returns {number[][]}
    */
   getAllBoards = (_board, player) => {
@@ -83,13 +114,21 @@ class MiniMaxPlayer {
 
     const boards = [];
 
-    
+    const { allCapturablesMoves, startPositions } = getCapturablePositions(board, COMPUTER);
 
-    for (const piece in getDiscPositions(board, player)) {
+    let totalPositions;
+
+    if (allCapturablesMoves.length > 0) {
+      // some move exists which can capture
+      // So only play from that
+      totalPositions = startPositions;
+    } else {
+      totalPositions = getDiscPositions(board, player);
+    }
+
+    for (const piece in totalPositions) {
       const [i, j] = piece;
       const validMoves = findMoves(i, j, board, player);
-
-      
 
       for (const move in validMoves) {
         const boardCopy = cloneDeep(board);
@@ -143,21 +182,8 @@ class MiniMaxPlayer {
         boards.push({
           board: boardCopy,
           captureMade,
-          kingMade
+          kingMade,
         });
-
-        // while(true) {
-        //   const { boardData, hasAnotherJump, kingMade, captureMade } = executeMove(
-        //     move[0],
-        //     move[1],
-        //     board,
-        //     player
-        //   );
-        //   if (!hasAnotherJump) {
-        //     boards.push({ boardData, hasAnotherJump, kingMade, captureMade });
-        //     break;
-        //   }
-        // }
       }
     }
     // calculate the possible moves
