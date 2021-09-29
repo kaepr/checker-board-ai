@@ -105,7 +105,6 @@
 .checker__piece.checker__piece--first,
 .checker__piece.checker__piece--second {
   box-shadow: 2px 4px 3px rgba(43, 42, 42, 0.35);
-  cursor: pointer;
 }
 
 .checker__piece.checker__piece--first {
@@ -118,7 +117,6 @@
 
 .checker__piece.checker__piece--valid_move {
   background: rgb(172, 249, 134);
-  cursor: pointer;
 }
 
 .checker__piece.checker__piece--active {

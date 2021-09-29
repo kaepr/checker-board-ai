@@ -22,7 +22,7 @@ const calculateUtility = (board) => {
         } else {
           playerDiscs++;
         }
-      } else {
+      } else if (owner == COMPUTER) {
         if (isKing) {
           aiKings++;
         } else {
