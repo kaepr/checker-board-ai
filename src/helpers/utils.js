@@ -12,7 +12,7 @@ export const getInitialCellState = () => {
   };
 };
 
-export const getDiscPositions = (player, board) => {
+export const getDiscPositions = (board, player) => {
   const positions = [];
   for (let i = 0; i < board.length; ++i) {
     const row = board[i];

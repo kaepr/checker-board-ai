@@ -59,7 +59,7 @@ class RandomPlayer {
           boardCopy,
           COMPUTER
         );
-        const caputres = getCaptureMoves(
+        const captures = getCaptureMoves(
           cellData.rowIndex,
           cellData.columnIndex,
           boardCopy,
@@ -67,7 +67,7 @@ class RandomPlayer {
           COMPUTER
         );
 
-        if (caputres.length > 0) {
+        if (captures.length > 0) {
           movesHavingCaptures.push(cellData);
         }
       });

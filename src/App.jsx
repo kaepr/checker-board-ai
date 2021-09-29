@@ -50,6 +50,7 @@ function App() {
   const [highlightedBoard, setHighlightedBoard] = useState(board);
 
   const initialize = () => {
+    agent.current = getAIFromName(agentType);
     dispatch(
       initializeGame({
         againstWhom: COMPUTER,
@@ -60,7 +61,6 @@ function App() {
     } else {
       setGameStarted(true);
     }
-    agent.current = getAIFromName(agentType);
   };
 
   useEffect(() => {
@@ -75,6 +75,7 @@ function App() {
   }, [board]);
 
   useEffect(() => {
+    console.log(agent.current);
     if (currentPlayer == COMPUTER) {
       // agent.current.makeNextMove();
 
@@ -113,6 +114,8 @@ function App() {
               borderRadius: '0.25rem',
             }}
             disabled={gameStarted}
+            value={agentType}
+            onChange={(e) => setAgentType(e.target.value)}
           >
             <option value="random">Random</option>
             <option value="minimax">MiniMax</option>
