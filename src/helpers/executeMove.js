@@ -50,6 +50,8 @@ export const executeMove = (rowIndex, columnIndex, boardData, currentPlayer) => 
 
   const dir = findCorrectDirection(i, j, rowIndex, columnIndex, board, currentPlayer);
 
+  console.log('found correct direction', dir);
+
   const nextX = i + dir[0];
   const nextY = j + dir[1];
 

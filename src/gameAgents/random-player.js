@@ -16,6 +16,7 @@ class RandomPlayer {
     this.board = boardData;
     this.cellCount = cellCount;
     this.cells = ownCells;
+    this.name = RandomPlayer.name;
   }
 
   updateInfo(boardData) {

@@ -8,6 +8,8 @@ import {
   changeWhoseTurn,
   initializeGame,
   selectBoard,
+  selectCaptureMadeAt,
+  selectKingMadeAt,
   selectLoading,
   selectMoveList,
   selectTurnCount,
@@ -37,7 +39,7 @@ const getAIFromName = (name) => {
 
 function App() {
   const [gameStarted, setGameStarted] = useState(false);
-  const [agentType, setAgentType] = useState('');
+  const [agentType, setAgentType] = useState('minimax');
   const agent = useRef(null);
 
   const dispatch = useDispatch();
@@ -46,6 +48,8 @@ function App() {
   const loading = useSelector(selectLoading);
   const currentPlayer = useSelector(selectWhoseTurn);
   const turnCount = useSelector(selectTurnCount);
+  const lastKingMadeAt = useSelector(selectKingMadeAt);
+  const lastCaptureMadeAt = useSelector(selectCaptureMadeAt);
 
   const [highlightedBoard, setHighlightedBoard] = useState(board);
 
@@ -77,12 +81,23 @@ function App() {
   useEffect(() => {
     console.log(agent.current);
     if (currentPlayer == COMPUTER) {
-      // agent.current.makeNextMove();
+      let data;
+      if(agent.current.name === MiniMaxPlayer.name){
+        data = agent.current.findNextMove(board, {
+          turnCount,
+          lkmat: lastKingMadeAt,
+          lcat: lastCaptureMadeAt,
+          player: currentPlayer
+        });
 
+      } else {
+        agent.current.updateInfo(board);
+        data = agent.current.findNextMove();
+      }
+
+      // agent.current.makeNextMove();
       // const randPlayer = new RandomPlayer(board, CELLS_AMOUNT, 12);
       // randPlayer.updateInfo(board);
-
-      const data = agent.current.findNextMove();
 
       if (data.kingMade) {
         dispatch(setKingMadeAt(turnCount));
@@ -96,8 +111,6 @@ function App() {
       dispatch(changeTurnCountByAmount(1));
       dispatch(changeWhoseTurn(PLAYER_1));
     }
-
-    // getGameState(asdas,asdasd,asdasd)
   }, [currentPlayer]);
 
   return (

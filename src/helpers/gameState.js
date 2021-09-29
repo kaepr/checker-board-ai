@@ -1,5 +1,7 @@
-import { BOARD_SIZE, PLAYER_1, COMPUTER, PLAYER_2, DRAW, GAME_END } from '../constants';
 import { cloneDeep } from 'lodash';
+
+import { findMoves } from './findHelpers';
+import { BOARD_SIZE, PLAYER_1, COMPUTER, PLAYER_2, DRAW, GAME_END } from '../constants';
 
 const createResponse = (
   playerOneCount,

@@ -32,7 +32,7 @@ Get all directions for provided cell
 
 export const getDirections = (rowIndex, columnIndex, board, currentPlayer) => {
   let directions = [];
-  // console.log('inside get directions', rowIndex, columnIndex, board, currentPlayer);
+  console.log('inside get directions', rowIndex, columnIndex, board, currentPlayer);
   if (currentPlayer == PLAYER_1) {
     directions.push([-1, -1]);
     directions.push([-1, 1]);
