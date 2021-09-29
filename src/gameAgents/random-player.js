@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash';
 import { BOARD_SIZE, CELLS_AMOUNT, COMPUTER } from '../constants';
-import { executeMove, findMoves } from '../helpers';
+import { executeMove, findMoves, getCaptureMoves, getDirections } from '../helpers';
 
 // Inclusive at minimum, exclusive at maximum
 function getRandomNumber(min, max) {
@@ -48,8 +48,40 @@ class RandomPlayer {
 
     while (!moveFound) {
       // Find any move which can be executed
-      const randomIndex = getRandomNumber(0, this.cells.length);
-      const initCell = this.cells[randomIndex];
+
+      // If there is a move which can capture, only find random cell from that
+
+      const movesHavingCaptures = [];
+      this.cells.forEach((cellData) => {
+        const directions = getDirections(
+          cellData.rowIndex,
+          cellData.columnIndex,
+          boardCopy,
+          COMPUTER
+        );
+        const caputres = getCaptureMoves(
+          cellData.rowIndex,
+          cellData.columnIndex,
+          boardCopy,
+          directions,
+          COMPUTER
+        );
+
+        if (caputres.length > 0) {
+          movesHavingCaptures.push(cellData);
+        }
+      });
+
+      let randomIndex;
+      let initCell;
+      if (movesHavingCaptures.length > 0) {
+        // Move exist which can capture cells, so only use those
+        randomIndex = getRandomNumber(0, movesHavingCaptures.length);
+        initCell = movesHavingCaptures[randomIndex];
+      } else {
+        randomIndex = getRandomNumber(0, this.cells.length);
+        initCell = this.cells[randomIndex];
+      }
 
       const possibleNextMoves = findMoves(
         initCell.rowIndex,

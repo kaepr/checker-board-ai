@@ -19,7 +19,7 @@ import {
 } from './features/game/gameSlice';
 import GameState from './components/GameState';
 import { getGameState, highlightCapturingMoves } from './helpers';
-import { CELLS_AMOUNT, COMPUTER, DEPTH, PLAYER_1 } from './constants';
+import { CELLS_AMOUNT, COMPUTER, DEPTH, PLAYER_1, PLAYER_2 } from './constants';
 import { RandomPlayer, MiniMaxPlayer, ABPruningPlayer } from './gameAgents';
 
 // const getAIFromName = (name) => {
@@ -50,7 +50,11 @@ function App() {
   const [highlightedBoard, setHighlightedBoard] = useState(board);
 
   const initialize = () => {
-    dispatch(initializeGame());
+    dispatch(
+      initializeGame({
+        againstWhom: PLAYER_2,
+      })
+    );
     if (gameStarted) {
       setGameStarted(false);
     } else {

@@ -1,3 +1,7 @@
+import { cloneDeep } from 'lodash';
+import { findMoves } from '../helpers/findHelpers';
+import { getDiscPositions } from '../helpers/utils';
+
 class MiniMaxPlayer {
   static name = 'minimax';
   /** @type {number} */
@@ -10,7 +14,8 @@ class MiniMaxPlayer {
    *
    * @returns {}
    */
-  makeNextMove = (board, depth, isMin) => {
+  makeNextMove = (_board, depth, isMin) => {
+    const board = cloneDeep(_board);
     if (isMin) {
       let bestMove;
       let minUtility = Number.POSITIVE_INFINITY;
@@ -40,11 +45,22 @@ class MiniMaxPlayer {
    * @param {number[][]} board
    * @param {number} player
    */
-  getAllMoves = (board, player) => {
+  getAllMoves = (_board, player) => {
+    const board = cloneDeep(_board);
+
     const moves = [];
 
     for (const piece in getDiscPositions(board, player)) {
-      // const validMoves =
+      const [i, j] = piece;
+      const validMoves = findMoves(
+        i,
+        j,
+        board,
+        player
+      );
+      for (const move in validMoves) {
+        
+      }
     }
     // calculate the possible moves
     return [];

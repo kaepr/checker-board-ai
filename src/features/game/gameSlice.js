@@ -21,9 +21,12 @@ const initialState = {
   captureMadeAt: 0,
   turnCount: 0,
   whoseTurn: PLAYER_1,
+  opponent: PLAYER_2,
 };
 
-const createNewBoard = (intializeInfo) => {
+const createNewBoard = (initializeInfo) => {
+  console.log(' inside create new board', initializeInfo);
+
   let board = [];
   for (let i = 0; i < BOARD_SIZE; i++) {
     let row = [];
@@ -37,7 +40,7 @@ const createNewBoard = (intializeInfo) => {
   for (let i = 0; i < 3; i++) {
     for (let j = 0; j < BOARD_SIZE; j++) {
       if ((i + j) % 2 == 0) {
-        board[i][j].owner = COMPUTER;
+        board[i][j].owner = initializeInfo.againstWhom;
       }
     }
   }
@@ -69,11 +72,12 @@ const gameSlice = createSlice({
         state.whoseTurn = payload.whoseTurn;
         state.kingMadeAt = payload.kingMadeAt;
         state.captureMadeAt = payload.captureMadeAt;
+        state.opponent = payload.opponent;
       },
-      prepare() {
+      prepare(initializeInfo) {
         return {
           payload: {
-            board: createNewBoard(),
+            board: createNewBoard(initializeInfo),
             loading: false,
             playerOneCells: CELLS_AMOUNT,
             playerTwoCells: CELLS_AMOUNT,
@@ -82,6 +86,7 @@ const gameSlice = createSlice({
             whoseTurn: PLAYER_1,
             kingMadeAt: 0,
             captureMadeAt: 0,
+            payload: initializeInfo.againstWhom,
           },
         };
       },
@@ -116,6 +121,9 @@ const gameSlice = createSlice({
     setCaptureMadeAt(state, action) {
       state.captureMadeAt = action.payload;
     },
+    setOpponent(state, action) {
+      state.opponent = action.payload;
+    },
   },
 });
 
@@ -131,6 +139,7 @@ export const {
   changeWhoseTurn,
   setKingMadeAt,
   setCaptureMadeAt,
+  setOpponent,
 } = gameSlice.actions;
 
 export const selectBoard = (state) => state.game.board;
@@ -140,5 +149,6 @@ export const selectWhoseTurn = (state) => state.game.whoseTurn;
 export const selectTurnCount = (state) => state.game.turnCount;
 export const selectKingMadeAt = (state) => state.game.kingMadeAt;
 export const selectCaptureMadeAt = (state) => state.game.captureMadeAt;
+export const selectOpponent = (state) => state.game.opponent;
 
 export default gameSlice.reducer;

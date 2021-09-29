@@ -8,6 +8,7 @@ import {
   changeTurnCountByAmount,
   changeWhoseTurn,
   selectBoard,
+  selectOpponent,
   selectTurnCount,
   selectWhoseTurn,
   setBoard,
@@ -23,6 +24,7 @@ const Cell = ({ data, xPosition, yPosition }) => {
   const board = useSelector(selectBoard);
   const whoseTurn = useSelector(selectWhoseTurn);
   const turnCount = useSelector(selectTurnCount);
+  const opponent = useSelector(selectOpponent);
 
   const handlePlayerClick = (e) => {
     e.stopPropagation();
@@ -47,8 +49,8 @@ const Cell = ({ data, xPosition, yPosition }) => {
       }
 
       if (whoseTurn == PLAYER_1) {
-        dispatch(changeWhoseTurn(COMPUTER));
-      } else if (whoseTurn == PLAYER_2) {
+        dispatch(changeWhoseTurn(opponent));
+      } else if (whoseTurn == opponent) {
         dispatch(changeWhoseTurn(PLAYER_1));
       }
 

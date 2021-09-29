@@ -4,16 +4,6 @@ import { BOARD_SIZE, COMPUTER, PLAYER_1, PLAYER_2 } from '../constants';
 import { getCleanBoard, getDirections, getInitialCellState, isValidDirection } from './utils';
 
 const findCorrectDirection = (initX, initY, rowIndex, columnIndex, boardData, currentPlayer) => {
-  // console.log(
-  //   'inside find correct directions',
-  //   initX,
-  //   initY,
-  //   rowIndex,
-  //   columnIndex,
-  //   boardData,
-  //   currentPlayer
-  // );
-
   const directions = getDirections(initX, initY, boardData, currentPlayer);
 
   // Find the correct direction of isActive Cell towards current cell
