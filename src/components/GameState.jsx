@@ -31,7 +31,7 @@ const GameState = ({ gameStarted, gameFinished, winner }) => {
 
   useEffect(() => {
     if (gameStarted) {
-      console.log('opponent whom', opponent);
+      // console.log('opponent whom', opponent);
       const gameState = getGameState(board, turnCount, lastKingMadeAt, lastCaptureMadeAt, opponent);
 
       if (opponent === PLAYER_2) {

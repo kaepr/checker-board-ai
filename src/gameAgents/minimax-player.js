@@ -244,7 +244,7 @@ class MiniMaxPlayer {
       player
     );
 
-    console.log('returned from minimax', board, tc);
+    // console.log('returned from minimax', board, tc);
 
     // console.log('got result back');
 

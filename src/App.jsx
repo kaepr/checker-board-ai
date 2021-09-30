@@ -54,7 +54,7 @@ function App() {
   const [highlightedBoard, setHighlightedBoard] = useState(board);
 
   const initialize = (againstWhom) => {
-    console.log('against whom', againstWhom);
+    // console.log('against whom', againstWhom);
     if (againstWhom === 'player2') {
       dispatch(
         initializeGame({
@@ -114,7 +114,7 @@ function App() {
     if (gameStarted) {
       const gameState = getGameState(board, turnCount, lastKingMadeAt, lastCaptureMadeAt, opponent);
 
-      console.log('game state app.jsx', gameState);
+      // console.log('game state app.jsx', gameState);
 
       if (gameState.isGameWon) {
         setGameFinished(true);
