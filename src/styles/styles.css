@@ -161,13 +161,18 @@
 
 .info--1,
 .info--2 {
+  width: 50%;
   align-self: flex-end;
-  margin-left: 2em;
+  font-weight: bold;
+  padding: 0.5em 2em;
 }
 
 .info--1 {
-  
+  background: #474554;
+  color: white;
 }
 
 .info--2 {
+  background: #efdfbb;
+  color: black;
 }

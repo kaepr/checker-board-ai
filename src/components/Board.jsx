@@ -13,7 +13,7 @@ const Row = ({ rowData, xPosition }) => {
 
 const Board = ({ boardData }) => {
   if (boardData.length === 0) {
-    return <div>Board not initialized</div>;
+    return <div />;
   }
 
   return (

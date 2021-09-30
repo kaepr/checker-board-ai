@@ -72,10 +72,6 @@ function App() {
 
     setGameStarted(true);
     setGameFinished(false);
-    // setGameStarted(false);
-    // }
-
-    // setGameFinished(false);
   };
 
   useEffect(() => {

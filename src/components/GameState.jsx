@@ -74,7 +74,7 @@ const GameState = ({ gameStarted, gameFinished, winner }) => {
       </div>
       <div className="info--box">
         <div className="info--1">Turn Count</div>
-        <div className="info--2">{turnCount}</div>
+        <div className="info--2">{turnCount + 1}</div>
       </div>
       <div className="info--box">
         <div className="info--1">Player 1 Cells</div>
