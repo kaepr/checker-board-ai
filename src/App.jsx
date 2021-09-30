@@ -70,13 +70,12 @@ function App() {
       );
     }
 
-    if (gameStarted) {
-      setGameStarted(false);
-    } else {
-      setGameStarted(true);
-    }
-
+    setGameStarted(true);
     setGameFinished(false);
+    // setGameStarted(false);
+    // }
+
+    // setGameFinished(false);
   };
 
   useEffect(() => {

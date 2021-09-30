@@ -27,7 +27,8 @@ const GameState = ({ gameStarted, gameFinished }) => {
   const [opponentName, setOpponentName] = useState('Opponent');
 
   useEffect(() => {
-    if (gameStarted && !gameFinished) {
+    if (gameStarted) {
+      console.log('opponent whom', opponent);
       const gameState = getGameState(board, turnCount, lastKingMadeAt, lastCaptureMadeAt, opponent);
 
       if (opponent === PLAYER_2) {
@@ -48,7 +49,7 @@ const GameState = ({ gameStarted, gameFinished }) => {
         setCellCountTwo(gameState.computerCount);
       }
     }
-  }, [board, currentPlayer]);
+  }, [board]);
 
   return (
     <div>

@@ -35,6 +35,7 @@ draw conditions
 export const getGameState = (boardData, turnCount, lastKingMadeAt, lastCaptureAt, opponent) => {
   if (!boardData) {
     // if board data is empty, handle separately
+    createResponse(0, 0, 0, false, 0, false, true);
   }
 
   // Check if all cells are of one type
@@ -124,7 +125,7 @@ export const getGameState = (boardData, turnCount, lastKingMadeAt, lastCaptureAt
       }
 
       if (board[i][j].owner == COMPUTER && !hasMovesComputer) {
-        const possMoves = findMoves(i, j, board, PLAYER_2);
+        const possMoves = findMoves(i, j, board, COMPUTER);
         if (possMoves.length > 0) {
           hasMovesComputer = true;
         }

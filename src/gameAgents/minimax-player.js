@@ -48,7 +48,8 @@ class MiniMaxPlayer {
 
     const state = getGameState(_board, turnCount, lkmat, lcat, player);
 
-    console.log('inside minimax game state', state, depth);
+    // console.log('inside minimax game state', state, depth, _board);
+
     if (depth == 0 || state.isGameWon || state.isGameDraw) {
       return [calculateUtility(_board), _board, turnCount, lkmat, lcat];
     }
@@ -59,11 +60,20 @@ class MiniMaxPlayer {
 
     let bestMoveBoard;
     let candidateUtility = isMin ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY;
+
+    let boardToReturn = cloneDeep(board);
+    let lastKingMadeAtToReturn = lkmat;
+    let lastCaptureMadeAtToReturn = lcat;
+
     // we're checking all the next possible moves
     for (const bestMoveBoardCandidate of this.getAllBoards(board, isMin ? PLAYER_1 : COMPUTER)) {
       // for ith possible move, we're checking for the next depth - 1 moves
+
+      // console.log('next board candidate', bestMoveBoardCandidate);
+
       let nlkmat = lkmat;
       let nlcat = lcat;
+
       if (bestMoveBoardCandidate.kingMade) {
         nlkmat = turnCount;
       }
@@ -83,27 +93,30 @@ class MiniMaxPlayer {
       )[0];
 
       // we're updating the min utility
-      candidateUtility = Math.min(candidateUtility, utility);
+      if (isMin) {
+        candidateUtility = Math.min(candidateUtility, utility);
+      } else {
+        candidateUtility = Math.max(candidateUtility, utility);
+      }
+      // console.log('new calculated utility', utility, candidateUtility);
+
       // if the minUtility is same as utility, that means we have our best move board
-      if (candidateUtility == utility) {
-        bestMoveBoard = bestMoveBoardCandidate.board;
+      if (candidateUtility === utility) {
+        bestMoveBoard = cloneDeep(bestMoveBoardCandidate.board);
+        boardToReturn = cloneDeep(bestMoveBoardCandidate.board);
+        lastKingMadeAtToReturn = nlkmat;
+        lastCaptureMadeAtToReturn = nlcat;
       }
     }
-    return [candidateUtility, bestMoveBoard, turnCount];
-    // if (isMin) {
 
-    // } else {
-    //   let bestMoveBoard;
-    //   let maxUtility = Number.NEGATIVE_INFINITY;
-    //   for (const board in this.getAllBoards(board, PLAYER_1)) {
-    //     utility = this.minimax(board, depth - 1, !isMin)[0];
-    //     maxUtility = Math.max(maxUtility, utility);
-    //     if (maxUtility == utility) {
-    //       bestMoveBoard = board;
-    //     }
-    //   }
-    //   return [maxUtility, bestMoveBoard];
-    // }
+    // return [calculateUtility(_board), _board, turnCount, lkmat, lcat];
+    return [
+      candidateUtility,
+      boardToReturn,
+      turnCount,
+      lastKingMadeAtToReturn,
+      lastCaptureMadeAtToReturn,
+    ];
   };
 
   /**
@@ -125,7 +138,7 @@ class MiniMaxPlayer {
 
     const boards = [];
 
-    const { allCapturablesMoves, startPositions } = getCapturablePositions(board, COMPUTER);
+    const { allCapturablesMoves, startPositions } = getCapturablePositions(board, player);
 
     let totalPositions;
 
@@ -205,6 +218,12 @@ class MiniMaxPlayer {
         });
       }
     }
+
+    // No valid next positions available
+    if (boards.length === 0) {
+      return boards;
+    }
+
     // calculate the possible moves
     return boards;
   };
