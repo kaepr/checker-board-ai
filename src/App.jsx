@@ -168,7 +168,7 @@ function App() {
           </button>
         </div>
       </div>
-      <GameState gameStarted={gameStarted} gameFinished={gameFinished} />
+      <GameState gameStarted={gameStarted} gameFinished={gameFinished} winner={winner} />
       <div className="board-and-moves-container">
         {!gameFinished && <Board boardData={highlightedBoard} />}
       </div>
