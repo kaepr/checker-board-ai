@@ -6,4 +6,4 @@ export const COMPUTER = 3;
 export const CELLS_AMOUNT = 12;
 export const DRAW = 0;
 export const GAME_END = -1;
-export const DEPTH = 4;
+export const DEPTH = 3;

@@ -47,6 +47,14 @@ class RandomPlayer {
     let captureMade = false;
     let boardCopy = cloneDeep(this.board);
 
+    if (this.cells.length === 0) {
+      return {
+        board: boardCopy,
+        kingMade,
+        captureMade,
+      };
+    }
+
     while (!moveFound) {
       // Find any move which can be executed
 

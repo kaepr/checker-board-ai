@@ -60,6 +60,8 @@ const GameState = ({ gameStarted, gameFinished }) => {
       <p>
         {opponentName} Cells : {cellCountTwo}
       </p>
+
+      {gameFinished && <div> Winner is {}</div>}
     </div>
   );
 };

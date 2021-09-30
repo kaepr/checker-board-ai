@@ -47,6 +47,8 @@ class MiniMaxPlayer {
     // console.log(depth, isMin, turnCount, player);
 
     const state = getGameState(_board, turnCount, lkmat, lcat, player);
+
+    console.log('inside minimax game state', state, depth);
     if (depth == 0 || state.isGameWon || state.isGameDraw) {
       return [calculateUtility(_board), _board, turnCount, lkmat, lcat];
     }
@@ -222,6 +224,8 @@ class MiniMaxPlayer {
       lcat,
       player
     );
+
+    console.log('returned from minimax', board, tc);
 
     // console.log('got result back');
 

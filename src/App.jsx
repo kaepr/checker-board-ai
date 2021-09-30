@@ -54,10 +54,11 @@ function App() {
   const [highlightedBoard, setHighlightedBoard] = useState(board);
 
   const initialize = (againstWhom) => {
-    if (againstWhom === PLAYER_2) {
+    console.log('against whom', againstWhom);
+    if (againstWhom === 'player2') {
       dispatch(
         initializeGame({
-          againstWhom: COMPUTER,
+          againstWhom: PLAYER_2,
         })
       );
     } else {
@@ -74,6 +75,8 @@ function App() {
     } else {
       setGameStarted(true);
     }
+
+    setGameFinished(false);
   };
 
   useEffect(() => {
@@ -116,6 +119,8 @@ function App() {
     if (gameStarted) {
       const gameState = getGameState(board, turnCount, lastKingMadeAt, lastCaptureMadeAt, opponent);
 
+      console.log('game state app.jsx', gameState);
+
       if (gameState.isGameWon) {
         setGameFinished(true);
         if (gameState.whoseWinner === PLAYER_1) {
@@ -155,17 +160,18 @@ function App() {
             value={agentType}
             onChange={(e) => setAgentType(e.target.value)}
           >
+            <option value="player2">Player 2</option>
             <option value="random">Random</option>
             <option value="minimax">MiniMax</option>
           </select>
-          <button className="btn-primary mt-4" onClick={initialize}>
+          <button className="btn-primary mt-4" onClick={() => initialize(agentType)}>
             {gameStarted ? 'Reset' : 'Start'}
           </button>
         </div>
       </div>
       <GameState gameStarted={gameStarted} gameFinished={gameFinished} />
       <div className="board-and-moves-container">
-        <Board boardData={highlightedBoard} />
+        {!gameFinished && <Board boardData={highlightedBoard} />}
       </div>
     </div>
   );
