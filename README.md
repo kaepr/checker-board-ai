@@ -1,3 +1,0 @@
-# Checker Board AI
-
-## Steps
