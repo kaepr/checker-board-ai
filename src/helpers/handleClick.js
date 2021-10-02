@@ -38,7 +38,6 @@ export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => 
   const { allCapturablesMoves, startPositions } = getCapturablePositions(board, currentPlayer);
 
   // Mark's all the capturing moves available
-  // ? Wasn't used anywhere ?
   // startPositions.forEach((move) => {
   //   board[move[0]][move[1]].hasPossibleCapture = true;
   // });
@@ -74,7 +73,6 @@ export const handleClick = (rowIndex, columnIndex, boardData, currentPlayer) => 
       }
     }
 
-    // TODO Hmm might bug out later
     if (exists) {
       // console.log('has another jump', multiJumpCaptures);
       // console.log('i, j, row, col', i, j, rowIndex, columnIndex);
